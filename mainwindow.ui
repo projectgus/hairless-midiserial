@@ -6,22 +6,105 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>474</width>
+    <height>258</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>MIDI&lt;-&gt;Serial Bridge</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QComboBox" name="cmbMidiOutput">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>10</y>
-      <width>92</width>
-      <height>28</height>
+      <y>0</y>
+      <width>461</width>
+      <height>156</height>
      </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="1" column="0">
+      <widget class="QLabel" name="label">
+       <property name="maximumSize">
+        <size>
+         <width>212</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Serial port (the device)</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="maximumSize">
+        <size>
+         <width>212</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>MIDI In (send to device)</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="2">
+      <widget class="QComboBox" name="cmbMidiIn"/>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="maximumSize">
+        <size>
+         <width>212</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>MIDI Out (sent from device)</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2">
+      <widget class="QComboBox" name="cmbMidiOut"/>
+     </item>
+     <item row="1" column="2">
+      <widget class="QComboBox" name="cmbSerial"/>
+     </item>
+     <item row="0" column="0">
+      <widget class="QCheckBox" name="chk_on">
+       <property name="text">
+        <string>Serial&lt;-&gt;MIDI Bridge On</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QCheckBox" name="chk_debug">
+       <property name="text">
+        <string>Debug MIDI messages</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QListWidget" name="lst_debug">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>160</y>
+      <width>461</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="autoScroll">
+     <bool>true</bool>
     </property>
    </widget>
   </widget>
@@ -33,7 +116,6 @@
     <bool>false</bool>
    </attribute>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

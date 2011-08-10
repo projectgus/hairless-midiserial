@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QComboBox>
+#include "src/RtMidi.h"
 
 namespace Ui {
     class MainWindow;
@@ -17,8 +19,12 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    RtMidiOut *m_midiout;
+    RtMidiIn *m_midiin;
 
-    void refreshOutputs();
+    void refresh();
+    void refreshMidi(QComboBox *combo, RtMidi *midi);
+    void refreshSerial();
 };
 
 #endif // MAINWINDOW_H
