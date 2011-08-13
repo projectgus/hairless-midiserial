@@ -9,17 +9,23 @@ QT       += core gui
 TARGET = ttymidi-plus
 TEMPLATE = app
 
+DEFINES +=APPNAME=\"ttymidi-plus\"
+
 # Main Program
 
 SOURCES += \
         main.cpp\
         mainwindow.cpp \
-        src/RtMidi.cpp
+        src/RtMidi.cpp \
+    src/QRtMidiIn.cpp \
+    src/Bridge.cpp
 
 HEADERS  += \
     src/RtMidi.h \
     src/RtError.h \
-    mainwindow.h
+    mainwindow.h \
+    src/QRtMidiIn.h \
+    src/Bridge.h
 
 FORMS    += mainwindow.ui
 
