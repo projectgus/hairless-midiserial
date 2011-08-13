@@ -49,6 +49,7 @@ QString Bridge::bridgeName()
 void Bridge::onMidiIn(double timeStamp, QByteArray message)
 {
     emit debugMessage(QString("MIDI In @ %1: %2").arg(timeStamp).arg(QString(message.toHex())));
+    emit midiReceived();
     // TODO: pad MIDI message where applicable
     if(serial && serial->isOpen()) {
         serial->write(message);
@@ -57,12 +58,14 @@ void Bridge::onMidiIn(double timeStamp, QByteArray message)
 
 void Bridge::onSerialAvailable()
 {
+    emit serialTraffic();
     QByteArray data = this->serial->readAll();
     emit debugMessage(QString("Serial In: %1").arg(QString(data.toHex())));
     // TODO: accumulate serial bytes, check for debug output, etc.
     if(midiOut) {
         std::vector<uint8_t> message = std::vector<uint8_t>(data.begin(), data.end());
         midiOut->sendMessage(&message);
+        emit midiSent();
     }
 }
 
