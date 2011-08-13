@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QComboBox>
 #include "src/RtMidi.h"
+#include "src/Bridge.h"
 
 namespace Ui {
     class MainWindow;
@@ -17,14 +18,20 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    bool eventFilter(QObject *, QEvent *);
+
 private:
     Ui::MainWindow *ui;
-    RtMidiOut *m_midiout;
-    RtMidiIn *m_midiin;
+    Bridge *bridge;
 
     void refresh();
-    void refreshMidi(QComboBox *combo, RtMidi *midi);
     void refreshSerial();
+    void refreshMidiIn();
+    void refreshMidiOut();
+    void refreshMidi(QComboBox *combo, RtMidi *midi);
+
+private slots:
+    void onValueChanged();
 };
 
 #endif // MAINWINDOW_H

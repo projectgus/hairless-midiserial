@@ -14,11 +14,13 @@
 #include "QRtMidiIn.h"
 #include "qextserialport/qextserialport.h"
 
+const QString NOT_CONNECTED = QString("(Not Connected)");
+
 class Bridge : public QObject
 {
     Q_OBJECT
 public:
-    explicit Bridge(QObject *parent, QString *serialName, PortSettings *serialSettings, int *midiInPort, int *midiOutPort);
+    explicit Bridge(QObject *parent, QString serialName, PortSettings &serialSettings, int midiInPort, int midiOutPort);
 
     // Destroying an existing Bridge will cleanup state & release all ports
     ~Bridge();
@@ -40,9 +42,9 @@ private slots:
     void onSerialAvailable();
 private:
     QRtMidiIn *midiIn;
-    int *midiInPort;
     RtMidiOut *midiOut;
-    int *midiOutPort;
+    int midiInPort;
+    int midiOutPort;
     QextSerialPort *serial;
 };
 
