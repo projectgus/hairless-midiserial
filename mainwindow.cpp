@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include "qextserialport/qextserialenumerator.h"
 
+const int SCROLLBACK_LINES = 25;
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
@@ -129,7 +131,12 @@ void MainWindow::onValueChanged()
 
 void MainWindow::onDisplayMessage(QString message)
 {
+    if(ui->lst_debug->count() > SCROLLBACK_LINES) {
+            printf("COUNT %d", ui->lst_debug->count());
+        ui->lst_debug->removeItemWidget(ui->lst_debug->item(ui->lst_debug->count()-1));
+    }
     ui->lst_debug->addItem(message);
+    ui->lst_debug->scrollToBottom();
 }
 
 void MainWindow::onDebugMessage(QString message)

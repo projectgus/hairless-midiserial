@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>474</width>
-    <height>258</height>
+    <width>552</width>
+    <height>263</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -20,91 +20,146 @@
    <string>Hairless MIDI&lt;-&gt;Serial Bridge</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>0</y>
-      <width>461</width>
-      <height>156</height>
-     </rect>
-    </property>
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="1" column="0">
-      <widget class="QLabel" name="label">
-       <property name="maximumSize">
-        <size>
-         <width>212</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Serial port (the device)</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="maximumSize">
-        <size>
-         <width>212</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>MIDI In (send to device)</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="2">
-      <widget class="QComboBox" name="cmbMidiIn"/>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="maximumSize">
-        <size>
-         <width>212</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>MIDI Out (sent from device)</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="2">
-      <widget class="QComboBox" name="cmbMidiOut"/>
-     </item>
-     <item row="1" column="2">
-      <widget class="QComboBox" name="cmbSerial"/>
-     </item>
-     <item row="0" column="0">
-      <widget class="QCheckBox" name="chk_on">
-       <property name="text">
-        <string>Serial&lt;-&gt;MIDI Bridge On</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QCheckBox" name="chk_debug">
-       <property name="text">
-        <string>Debug MIDI messages</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
    <widget class="QListWidget" name="lst_debug">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>160</y>
-      <width>461</width>
+      <width>531</width>
       <height>81</height>
      </rect>
     </property>
     <property name="autoScroll">
      <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>30</y>
+      <width>201</width>
+      <height>91</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>images/arrows2.png</pixmap>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>50</y>
+      <width>146</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>212</width>
+      <height>16777215</height>
+     </size>
+    </property>
+    <property name="text">
+     <string>Serial port</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="chk_on">
+    <property name="geometry">
+     <rect>
+      <x>11</x>
+      <y>1</y>
+      <width>185</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Serial&lt;-&gt;MIDI Bridge On</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="chk_debug">
+    <property name="geometry">
+     <rect>
+      <x>11</x>
+      <y>128</y>
+      <width>171</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Debug MIDI messages</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="cmbMidiIn">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>100</y>
+      <width>151</width>
+      <height>27</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>20</y>
+      <width>175</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>212</width>
+      <height>16777215</height>
+     </size>
+    </property>
+    <property name="text">
+     <string>MIDI Out</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>80</y>
+      <width>149</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>212</width>
+      <height>16777215</height>
+     </size>
+    </property>
+    <property name="text">
+     <string>MIDI In</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="cmbMidiOut">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>40</y>
+      <width>151</width>
+      <height>27</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="cmbSerial">
+    <property name="geometry">
+     <rect>
+      <x>9</x>
+      <y>71</y>
+      <width>171</width>
+      <height>27</height>
+     </rect>
     </property>
    </widget>
   </widget>
