@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>MIDI&lt;-&gt;Serial Bridge</string>
+   <string>Hairless MIDI&lt;-&gt;Serial Bridge</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QWidget" name="layoutWidget">

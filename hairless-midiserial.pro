@@ -6,10 +6,10 @@
 
 QT       += core gui
 
-TARGET = ttymidi-plus
+TARGET = hairless-midiserial
 TEMPLATE = app
 
-DEFINES +=APPNAME=\"ttymidi-plus\"
+DEFINES +=APPNAME=\"hairless-midiserial\"
 
 # Main Program
 
