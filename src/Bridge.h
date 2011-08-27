@@ -41,6 +41,12 @@ private slots:
     void onMidiIn(double timeStamp, QByteArray message);
     void onSerialAvailable();
 private:
+    int tryMatchSerial(QByteArray &buf);
+    int scanSerialNoise(QByteArray &buf);
+    int scanSerialDebugMessage(QByteArray &buf);
+    int scanSerialMidiMessage(QByteArray &buf);
+
+    QByteArray serialBuf;
     QRtMidiIn *midiIn;
     RtMidiOut *midiOut;
     int midiInPort;

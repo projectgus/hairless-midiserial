@@ -18,6 +18,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->cmbSerial->installEventFilter(this);
 
     // Plumb signals & slots
+    connect(ui->cmbMidiIn, SIGNAL(currentIndexChanged(int)), SLOT(onValueChanged()));
+    connect(ui->cmbMidiOut, SIGNAL(currentIndexChanged(int)), SLOT(onValueChanged()));
+    connect(ui->cmbSerial, SIGNAL(currentIndexChanged(int)), SLOT(onValueChanged()));
+    connect(ui->chk_on, SIGNAL(clicked()), SLOT(onValueChanged()));
 
     refresh();
 }
@@ -92,7 +96,7 @@ void MainWindow::refreshSerial()
     ui->cmbSerial->addItem(NOT_CONNECTED);
     QList<QextPortInfo> ports = QextSerialEnumerator::getPorts();
     for(QList<QextPortInfo>::iterator it = ports.begin(); it != ports.end(); it++) {
-        ui->cmbSerial->addItem(it->friendName);
+        ui->cmbSerial->addItem(it->friendName, QVariant(it->physName));
         if(current == it->friendName) {
             ui->cmbSerial->setCurrentIndex(ui->cmbSerial->count() - 1);
         }
@@ -114,5 +118,34 @@ void MainWindow::onValueChanged()
     settings.Parity = PAR_NONE;
     settings.StopBits = STOP_1;
     settings.Timeout_Millisec = 1;
-    bridge = new Bridge(this, ui->cmbSerial->currentText(), settings, midiIn, midiOut);
+    bridge = new Bridge(this, ui->cmbSerial->itemData(ui->cmbSerial->currentIndex()).toString(), settings, midiIn, midiOut);
+
+    connect(bridge, SIGNAL(debugMessage(QString)), SLOT(onDebugMessage(QString)));
+    connect(bridge, SIGNAL(displayMessage(QString)), SLOT(onDisplayMessage(QString)));
+    connect(bridge, SIGNAL(midiReceived()), SLOT(onMidiReceived()));
+    connect(bridge, SIGNAL(midiSent()), SLOT(onMidiSent()));
+    connect(bridge, SIGNAL(serialTraffic()), SLOT(onSerialTraffic()));
+}
+
+void MainWindow::onDisplayMessage(QString message)
+{
+    ui->lst_debug->addItem(message);
+}
+
+void MainWindow::onDebugMessage(QString message)
+{
+    if(ui->chk_debug->isChecked())
+        onDisplayMessage(message);
+}
+
+void MainWindow::onMidiReceived()
+{
+}
+
+void MainWindow::onMidiSent()
+{
+}
+
+void MainWindow::onSerialTraffic()
+{
 }

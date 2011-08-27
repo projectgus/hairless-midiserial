@@ -32,6 +32,11 @@ private:
 
 private slots:
     void onValueChanged();
+    void onDisplayMessage(QString message);
+    void onDebugMessage(QString message);
+    void onMidiSent();
+    void onMidiReceived();
+    void onSerialTraffic();
 };
 
 #endif // MAINWINDOW_H
