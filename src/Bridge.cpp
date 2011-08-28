@@ -122,7 +122,7 @@ int Bridge::tryMatchSerial(QByteArray &buf)
 int Bridge::scanSerialNoise(QByteArray &buf)
 {
     int n = 0;
-    while( (buf[n] & MSG_MASK) == 0) { n++; }  // Trim any non-MIDI message flags
+    while( n < buf.size() && ( buf[n] & MSG_MASK) == 0 ) { n++; }  // Trim any non-MIDI message flags
     if(n) {
         emit displayMessage(QString("Error: got nonsense MIDI data: %1").arg(QString(buf.left(n).toHex())));
     }
