@@ -52,7 +52,7 @@ win32 {
 
 # RtMidi TODO: make properly cross-platform
 
-DEFINES += __LINUX_ALSASEQ__
+DEFINES += __LINUX_ALSASEQ__ ALLOW_VIRTUAL_MIDI
 CONFIG += link_pkgconfig x11
 PKGCONFIG += alsa
 LIBS += -lpthread

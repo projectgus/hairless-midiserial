@@ -14,13 +14,21 @@
 #include "QRtMidiIn.h"
 #include "qextserialport/qextserialport.h"
 
-const QString NOT_CONNECTED = QString("(Not Connected)");
+const QString TEXT_NOT_CONNECTED = "(Not Connected)";
+const QString TEXT_NEW_PORT = "(Create new port)";
+
+#define IDX_NOT_CONNECTED -3
+#define IDX_NEW_PORT -2
+
+#define NAME_MIDI_IN "MIDI->Serial"
+#define NAME_MIDI_OUT "Serial->MIDI"
 
 class Bridge : public QObject
 {
     Q_OBJECT
 public:
-    explicit Bridge(QObject *parent, QString serialName, PortSettings &serialSettings, int midiInPort, int midiOutPort);
+    explicit Bridge(QObject *parent);
+    void attach(QString serialName, PortSettings &serialSettings, int midiInPort, int midiOutPort);
 
     // Destroying an existing Bridge will cleanup state & release all ports
     ~Bridge();

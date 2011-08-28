@@ -9,7 +9,7 @@ const int LED_BLINKTIME= 100; // ms
 const QString RES_LED_ON = ":/images/images/led-on.png";
 const QString RES_LED_OFF = ":/images/images/led-off.png";
 
-
+const QString TEXT_NOSELECTION = "";
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -89,12 +89,20 @@ void MainWindow::refreshMidi(QComboBox *combo, RtMidi *midi)
     combo->clear();
     try {
       int ports = midi->getPortCount();
-      combo->addItem(NOT_CONNECTED);
+      combo->addItem(TEXT_NOT_CONNECTED, IDX_NOT_CONNECTED);
+      combo->setCurrentIndex(0);
+#ifdef ALLOW_VIRTUAL_MIDI
+      combo->addItem(TEXT_NEW_PORT, IDX_NEW_PORT);
+      combo->setCurrentIndex(1);
+#endif
       for (int i = 0; i < ports; i++ ) {
         QString name = QString::fromStdString(midi->getPortName(i));
-        combo->addItem(name);
-        if(current == name) {
-            combo->setCurrentIndex(combo->count() - 1);
+        if(name.length() && !name.startsWith(NAME_MIDI_IN) && !name.startsWith(NAME_MIDI_OUT))
+        {
+            combo->addItem(name, i);
+            if(current == name) {
+                combo->setCurrentIndex(combo->count() - 1);
+           }
         }
       }
     } catch (RtError& err) {
@@ -107,7 +115,7 @@ void MainWindow::refreshSerial()
 {
     QString current = ui->cmbSerial->currentText();
     ui->cmbSerial->clear();
-    ui->cmbSerial->addItem(NOT_CONNECTED);
+    ui->cmbSerial->addItem(TEXT_NOT_CONNECTED);
     QList<QextPortInfo> ports = QextSerialEnumerator::getPorts();
     for(QList<QextPortInfo>::iterator it = ports.begin(); it != ports.end(); it++) {
         ui->cmbSerial->addItem(it->friendName, QVariant(it->physName));
@@ -115,6 +123,11 @@ void MainWindow::refreshSerial()
             ui->cmbSerial->setCurrentIndex(ui->cmbSerial->count() - 1);
         }
     }
+}
+
+static QVariant currentData(QComboBox *widget)
+{
+    return widget->itemData(widget->currentIndex());
 }
 
 void MainWindow::onValueChanged()
@@ -127,8 +140,6 @@ void MainWindow::onValueChanged()
                     && ui->cmbMidiIn->currentIndex() == 0
                     && ui->cmbMidiOut->currentIndex() == 0 ))
         return; // No bridge
-    int midiIn =ui->cmbMidiIn->currentIndex()-1;
-    int midiOut = ui->cmbMidiOut->currentIndex()-1;
     PortSettings settings;
     settings.BaudRate = BAUD115200;
     settings.DataBits = DATA_8;
