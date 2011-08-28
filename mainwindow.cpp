@@ -9,8 +9,6 @@ const int LED_BLINKTIME= 100; // ms
 const QString RES_LED_ON = ":/images/images/led-on.png";
 const QString RES_LED_OFF = ":/images/images/led-off.png";
 
-
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
@@ -87,17 +85,19 @@ void MainWindow::refreshMidi(QComboBox *combo, RtMidi *midi)
 {
     QString current = combo->currentText();
     combo->clear();
-    try {
+    try
+    {
       int ports = midi->getPortCount();
-      combo->addItem(NOT_CONNECTED);
+      combo->addItem(TEXT_NOT_CONNECTED);
       for (int i = 0; i < ports; i++ ) {
         QString name = QString::fromStdString(midi->getPortName(i));
         combo->addItem(name);
-        if(current == name) {
-            combo->setCurrentIndex(combo->count() - 1);
+            if(current == name) {
+                combo->setCurrentIndex(combo->count() - 1);
+           }
         }
-      }
-    } catch (RtError& err) {
+    }
+    catch (RtError& err) {
         ui->lst_debug->addItem("Failed to scan for MIDI ports:");
         ui->lst_debug->addItem(QString::fromStdString(err.getMessage()));
     }
@@ -107,7 +107,7 @@ void MainWindow::refreshSerial()
 {
     QString current = ui->cmbSerial->currentText();
     ui->cmbSerial->clear();
-    ui->cmbSerial->addItem(NOT_CONNECTED);
+    ui->cmbSerial->addItem(TEXT_NOT_CONNECTED);
     QList<QextPortInfo> ports = QextSerialEnumerator::getPorts();
     for(QList<QextPortInfo>::iterator it = ports.begin(); it != ports.end(); it++) {
         ui->cmbSerial->addItem(it->friendName, QVariant(it->physName));
@@ -143,7 +143,7 @@ void MainWindow::onValueChanged()
     connect(bridge, SIGNAL(midiReceived()), SLOT(onMidiReceived()));
     connect(bridge, SIGNAL(midiSent()), SLOT(onMidiSent()));
     connect(bridge, SIGNAL(serialTraffic()), SLOT(onSerialTraffic()));
-    bridge->attach(currentData(ui->cmbSerial).toString(), settings, currentData(ui->cmbMidiIn).toInt(), currentData(ui->cmbMidiOut).toInt());
+    bridge->attach(ui->cmbSerial->itemData(ui->cmbSerial->currentIndex()).toString(), settings, midiIn, midiOut);
 }
 
 void MainWindow::onDisplayMessage(QString message)

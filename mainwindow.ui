@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>664</width>
-    <height>263</height>
+    <width>604</width>
+    <height>262</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -25,9 +25,15 @@
      <rect>
       <x>10</x>
       <y>162</y>
-      <width>531</width>
+      <width>591</width>
       <height>81</height>
      </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+      <horstretch>0</horstretch>
+      <verstretch>1</verstretch>
+     </sizepolicy>
     </property>
     <property name="autoScroll">
      <bool>true</bool>

@@ -23,33 +23,55 @@
 #define MSG_DEBUG 0xFF // special ttymidi "debug output" MIDI message tag
 
 
-Bridge::Bridge(QObject *parent, QString serialName, PortSettings &serialSettings, int midiInPort, int midiOutPort) :
+Bridge::Bridge(QObject *parent) :
         QObject(parent),
         serialBuf(),
         midiIn(NULL),
         midiOut(NULL),
         serial(NULL)
 {
-    if(serialName.length() && serialName != NOT_CONNECTED) {
-        emit displayMessage("Opening serial port" + serialName);
+
+}
+
+void Bridge::attach(QString serialName, PortSettings &serialSettings, int midiInPort, int midiOutPort)
+{
+    if(serialName.length() && serialName != TEXT_NOT_CONNECTED) {
+        emit displayMessage(QString("Opening serial port '%1'").arg(serialName));
         this->serial = new QextSerialPort(serialName, serialSettings);
         connect(this->serial, SIGNAL(readyRead()), this, SLOT(onSerialAvailable()));
         this->serial->open(QIODevice::ReadWrite);
     }
-    if(midiInPort > -1) {
-        emit displayMessage("Opening MIDI In port #" + midiInPort);
-        this->midiInPort = midiInPort;
-        this->midiIn = new QRtMidiIn("Serial->MIDI Port");
-        this->midiIn->openPort(midiInPort);
-        connect(this->midiIn, SIGNAL(messageReceived(double,QByteArray)), this, SLOT(onMidiIn(double,QByteArray)));
-        // todo: catch exceptions
+
+    // MIDI out
+    try
+    {
+        if(midiOutPort > -1)
+        {
+            emit displayMessage(QString("Opening MIDI Out port #%1").arg(midiOutPort));
+            this->midiOutPort = midiOutPort;
+            this->midiOut = new RtMidiOut(NAME_MIDI_OUT);
+            this->midiOut->openPort(midiOutPort);
+        }
     }
-    if(midiOutPort > -1) {
-        emit displayMessage("Opening MIDI Out port #" + midiOutPort);
-        this->midiOutPort = midiOutPort;
-        this->midiOut = new RtMidiOut("MIDI->Serial Port");
-        this->midiOut->openPort(midiOutPort);
-            // todo: catch exceptions
+    catch(RtError e)
+    {
+        displayMessage(QString("Failed to open MIDI out port: %1").arg(QString::fromStdString(e.getMessage())));
+    }
+
+    // MIDI in
+    try
+    {
+       if(midiInPort > -1) {
+            emit displayMessage(QString("Opening MIDI In port #%1").arg(midiInPort));
+            this->midiInPort = midiInPort;
+            this->midiIn = new QRtMidiIn(NAME_MIDI_IN);
+            this->midiIn->openPort(midiInPort);
+            connect(this->midiIn, SIGNAL(messageReceived(double,QByteArray)), this, SLOT(onMidiIn(double,QByteArray)));
+        }
+     }
+    catch(RtError e)
+    {
+        displayMessage(QString("Failed to open MIDI in port: %1").arg(QString::fromStdString(e.getMessage())));
     }
 }
 
@@ -72,7 +94,7 @@ QString Bridge::bridgeName()
 
 void Bridge::onMidiIn(double timeStamp, QByteArray message)
 {
-    emit debugMessage(QString("MIDI In @ %1: %2").arg(timeStamp).arg(QString(message.toHex())));
+    emit debugMessage(QString("MIDI In: %2").arg(timeStamp).arg(QString(message.toHex())));
     emit midiReceived();
     while(message.length() < 3) {
         message.append((char)0); // pad short MIDI messages, as per ttymidi
