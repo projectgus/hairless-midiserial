@@ -1,8 +1,15 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "qextserialport/qextserialenumerator.h"
+#include <QTimer>
 
 const int SCROLLBACK_LINES = 25;
+const int LED_BLINKTIME= 100; // ms
+
+const QString RES_LED_ON = ":/images/images/led-on.png";
+const QString RES_LED_OFF = ":/images/images/led-off.png";
+
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -13,6 +20,10 @@ MainWindow::MainWindow(QWidget *parent) :
     // Fixed size
     this->setMinimumSize(this->size());
     this->setMaximumSize(this->size());
+
+    // Load LED images
+    this->pxLedOn = QPixmap::fromImage(QImage(RES_LED_ON));
+    this->pxLedOff = QPixmap::fromImage(QImage(RES_LED_OFF));
 
     // Plumb event filter for focus events
     ui->cmbMidiIn->installEventFilter(this);
@@ -30,6 +41,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    activeLeds.clear();
     delete bridge;
     delete ui;
 }
@@ -147,12 +159,33 @@ void MainWindow::onDebugMessage(QString message)
 
 void MainWindow::onMidiReceived()
 {
+    ledOn(ui->led_midiin);
 }
 
 void MainWindow::onMidiSent()
 {
+    ledOn(ui->led_midiout);
 }
 
 void MainWindow::onSerialTraffic()
 {
+    ledOn(ui->led_serial);
 }
+
+void MainWindow::ledOn(QLabel *led)
+{
+    led->setPixmap(pxLedOn);
+    activeLeds.push_back(led);
+    QTimer::singleShot(LED_BLINKTIME, this, SLOT(ledOffTimer()));
+}
+
+void MainWindow::ledOffTimer()
+{
+    if(activeLeds.empty())
+        return;
+    QLabel *led = activeLeds.front();
+    activeLeds.pop_front();
+    if(!activeLeds.contains(led))
+        led->setPixmap(pxLedOff);
+}
+

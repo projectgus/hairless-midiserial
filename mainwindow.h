@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QComboBox>
+#include <QLabel>
 #include "src/RtMidi.h"
 #include "src/Bridge.h"
 
@@ -23,12 +24,16 @@ public:
 private:
     Ui::MainWindow *ui;
     Bridge *bridge;
+    QPixmap pxLedOn;
+    QPixmap pxLedOff;
+    QList<QLabel *> activeLeds;
 
     void refresh();
     void refreshSerial();
     void refreshMidiIn();
     void refreshMidiOut();
     void refreshMidi(QComboBox *combo, RtMidi *midi);
+    void ledOn(QLabel *led);
 
 private slots:
     void onValueChanged();
@@ -37,6 +42,7 @@ private slots:
     void onMidiSent();
     void onMidiReceived();
     void onSerialTraffic();
+    void ledOffTimer();
 };
 
 #endif // MAINWINDOW_H

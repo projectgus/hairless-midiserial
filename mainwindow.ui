@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>552</width>
+    <width>664</width>
     <height>263</height>
    </rect>
   </property>
@@ -24,7 +24,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>160</y>
+      <y>162</y>
       <width>531</width>
       <height>81</height>
      </rect>
@@ -36,7 +36,7 @@
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>190</x>
+      <x>210</x>
       <y>30</y>
       <width>201</width>
       <height>91</height>
@@ -71,8 +71,8 @@
    <widget class="QCheckBox" name="chk_on">
     <property name="geometry">
      <rect>
-      <x>11</x>
-      <y>1</y>
+      <x>10</x>
+      <y>10</y>
       <width>185</width>
       <height>22</height>
      </rect>
@@ -84,8 +84,8 @@
    <widget class="QCheckBox" name="chk_debug">
     <property name="geometry">
      <rect>
-      <x>11</x>
-      <y>128</y>
+      <x>10</x>
+      <y>130</y>
       <width>171</width>
       <height>22</height>
      </rect>
@@ -97,9 +97,9 @@
    <widget class="QComboBox" name="cmbMidiIn">
     <property name="geometry">
      <rect>
-      <x>390</x>
+      <x>430</x>
       <y>100</y>
-      <width>151</width>
+      <width>170</width>
       <height>27</height>
      </rect>
     </property>
@@ -107,7 +107,7 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>390</x>
+      <x>430</x>
       <y>20</y>
       <width>175</width>
       <height>17</height>
@@ -126,7 +126,7 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>390</x>
+      <x>430</x>
       <y>80</y>
       <width>149</width>
       <height>17</height>
@@ -145,9 +145,9 @@
    <widget class="QComboBox" name="cmbMidiOut">
     <property name="geometry">
      <rect>
-      <x>390</x>
+      <x>430</x>
       <y>40</y>
-      <width>151</width>
+      <width>170</width>
       <height>27</height>
      </rect>
     </property>
@@ -155,11 +155,59 @@
    <widget class="QComboBox" name="cmbSerial">
     <property name="geometry">
      <rect>
-      <x>9</x>
+      <x>10</x>
       <y>71</y>
-      <width>171</width>
+      <width>170</width>
       <height>27</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="led_serial">
+    <property name="geometry">
+     <rect>
+      <x>185</x>
+      <y>77</y>
+      <width>16</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap resource="resources.qrc">:/images/images/led-off.png</pixmap>
+    </property>
+   </widget>
+   <widget class="QLabel" name="led_midiout">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>45</y>
+      <width>16</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap resource="resources.qrc">:/images/images/led-off.png</pixmap>
+    </property>
+   </widget>
+   <widget class="QLabel" name="led_midiin">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>105</y>
+      <width>16</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap resource="resources.qrc">:/images/images/led-off.png</pixmap>
     </property>
    </widget>
   </widget>

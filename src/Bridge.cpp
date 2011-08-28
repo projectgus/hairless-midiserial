@@ -79,6 +79,7 @@ void Bridge::onMidiIn(double timeStamp, QByteArray message)
     }
     if(serial && serial->isOpen()) {
         serial->write(message);
+        emit serialTraffic();
     }
 }
 
