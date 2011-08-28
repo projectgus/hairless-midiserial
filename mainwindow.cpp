@@ -3,7 +3,7 @@
 #include "qextserialport/qextserialenumerator.h"
 #include <QTimer>
 
-const int SCROLLBACK_LINES = 25;
+const int SCROLLBACK_LINES = 250;
 const int LED_BLINKTIME= 100; // ms
 
 const QString RES_LED_ON = ":/images/images/led-on.png";
@@ -17,9 +17,9 @@ MainWindow::MainWindow(QWidget *parent) :
     bridge(NULL)
 {
     ui->setupUi(this);
-    // Fixed size
+    // Fixed width, minimum height
     this->setMinimumSize(this->size());
-    this->setMaximumSize(this->size());
+    this->setMaximumSize(this->size().width(), 2000);
 
     // Load LED images
     this->pxLedOn = QPixmap::fromImage(QImage(RES_LED_ON));
@@ -121,7 +121,11 @@ void MainWindow::onValueChanged()
 {
     delete bridge;
     bridge = NULL;
-    if(!ui->chk_on->isChecked())
+    ui->lst_debug->clear();
+    if(!ui->chk_on->isChecked()
+            || ( ui->cmbSerial->currentIndex() == 0
+                    && ui->cmbMidiIn->currentIndex() == 0
+                    && ui->cmbMidiOut->currentIndex() == 0 ))
         return; // No bridge
     int midiIn =ui->cmbMidiIn->currentIndex()-1;
     int midiOut = ui->cmbMidiOut->currentIndex()-1;
@@ -132,23 +136,24 @@ void MainWindow::onValueChanged()
     settings.Parity = PAR_NONE;
     settings.StopBits = STOP_1;
     settings.Timeout_Millisec = 1;
-    bridge = new Bridge(this, ui->cmbSerial->itemData(ui->cmbSerial->currentIndex()).toString(), settings, midiIn, midiOut);
-
+    ui->lst_debug->addItem("Starting MIDI<->Serial Bridge...");
+    bridge = new Bridge(this);
     connect(bridge, SIGNAL(debugMessage(QString)), SLOT(onDebugMessage(QString)));
     connect(bridge, SIGNAL(displayMessage(QString)), SLOT(onDisplayMessage(QString)));
     connect(bridge, SIGNAL(midiReceived()), SLOT(onMidiReceived()));
     connect(bridge, SIGNAL(midiSent()), SLOT(onMidiSent()));
     connect(bridge, SIGNAL(serialTraffic()), SLOT(onSerialTraffic()));
+    bridge->attach(currentData(ui->cmbSerial).toString(), settings, currentData(ui->cmbMidiIn).toInt(), currentData(ui->cmbMidiOut).toInt());
 }
 
 void MainWindow::onDisplayMessage(QString message)
 {
-    if(ui->lst_debug->count() > SCROLLBACK_LINES) {
-            printf("COUNT %d", ui->lst_debug->count());
-        ui->lst_debug->removeItemWidget(ui->lst_debug->item(ui->lst_debug->count()-1));
+    QListWidget *lst = ui->lst_debug;
+    if(lst->count() > SCROLLBACK_LINES) {
+        lst->removeItemWidget(lst->item(lst->count()-1));
     }
-    ui->lst_debug->addItem(message);
-    ui->lst_debug->scrollToBottom();
+    lst->addItem(message);
+    lst->scrollToBottom();
 }
 
 void MainWindow::onDebugMessage(QString message)
@@ -187,5 +192,13 @@ void MainWindow::ledOffTimer()
     activeLeds.pop_front();
     if(!activeLeds.contains(led))
         led->setPixmap(pxLedOff);
+}
+
+void MainWindow::resizeEvent(QResizeEvent *)
+{
+    QListWidget *lst = ui->lst_debug;
+    QRect geo = lst->geometry();
+    geo.setHeight( this->height() - geo.top() - 20 );
+    lst->setGeometry(geo);
 }
 

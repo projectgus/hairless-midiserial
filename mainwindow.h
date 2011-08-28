@@ -21,6 +21,8 @@ public:
 
     bool eventFilter(QObject *, QEvent *);
 
+    void resizeEvent(QResizeEvent *);
+
 private:
     Ui::MainWindow *ui;
     Bridge *bridge;
