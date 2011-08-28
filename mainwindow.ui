@@ -46,7 +46,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>images/arrows2.png</pixmap>
+     <pixmap resource="resources.qrc">:/images/images/arrows.png</pixmap>
     </property>
    </widget>
    <widget class="QLabel" name="label">
@@ -173,6 +173,8 @@
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

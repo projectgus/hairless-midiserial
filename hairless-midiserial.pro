@@ -58,3 +58,6 @@ PKGCONFIG += alsa
 LIBS += -lpthread
 
 SUBDIRS = qextserialport
+
+RESOURCES += \
+    resources.qrc
