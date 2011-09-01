@@ -29,6 +29,9 @@ HEADERS  += \
 
 FORMS    += mainwindow.ui
 
+# libftdi
+#LIBS += -lftdi
+
 # qextserialport
 
 HEADERS                 += qextserialport/qextserialport.h \
@@ -50,12 +53,19 @@ win32 {
   LIBS             += -lsetupapi
 }
 
-# RtMidi TODO: make properly cross-platform
+# RtMidi
 
-DEFINES += __LINUX_ALSASEQ__
-CONFIG += link_pkgconfig x11
-PKGCONFIG += alsa
-LIBS += -lpthread
+unix:!macx { # linux doesn't get picked up, not sure what else to use
+  DEFINES += __LINUX_ALSASEQ__
+  CONFIG += link_pkgconfig x11
+  PKGCONFIG += alsa
+  LIBS += -lpthread
+}
+
+win32 {
+  DEFINES += __WINDOWS_MM__
+  LIBS += -lwinmm
+}
 
 SUBDIRS = qextserialport
 
