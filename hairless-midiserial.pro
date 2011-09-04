@@ -47,6 +47,7 @@ macx {
 }
 
 win32 {
+  QMAKE_LFLAGS += -static -static-libgcc
   SOURCES          += qextserialport/win_qextserialport.cpp \
                       qextserialport/qextserialenumerator_win.cpp
   DEFINES          += WINVER=0x0501 # needed for mingw to pull in appropriate dbt business...probably a better way to do this
