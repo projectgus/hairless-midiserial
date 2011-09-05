@@ -70,6 +70,11 @@ win32 {
 }
 
 
+# latency fixes
+
+linux-g++ {
+   SOURCES += src/fixlatency_linux.cpp
+}
 win32 {
    SOURCES += src/fixlatency_win32.cpp
 }
