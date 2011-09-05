@@ -25,7 +25,8 @@ HEADERS  += \
     src/RtError.h \
     mainwindow.h \
     src/QRtMidiIn.h \
-    src/Bridge.h
+    src/Bridge.h \
+    src/fixlatency.h
 
 FORMS    += mainwindow.ui
 
@@ -68,7 +69,13 @@ win32 {
   LIBS += -lwinmm
 }
 
-SUBDIRS = qextserialport
+
+win32 {
+   SOURCES += src/fixlatency_win32.cpp
+}
+
+
+# Resources
 
 RESOURCES += \
     resources.qrc
