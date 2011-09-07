@@ -13,6 +13,7 @@
 #include "RtMidi.h"
 #include "QRtMidiIn.h"
 #include "qextserialport/qextserialport.h"
+#include "PortLatency.h"
 
 const QString TEXT_NOT_CONNECTED = "(Not Connected)";
 const QString TEXT_NEW_PORT = "(Create new port)";
@@ -57,6 +58,7 @@ private:
     int midiInPort;
     int midiOutPort;
     QextSerialPort *serial;
+    PortLatency *latency;
 };
 
 #endif // BRIDGE_H

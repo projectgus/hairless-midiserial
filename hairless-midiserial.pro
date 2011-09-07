@@ -18,7 +18,8 @@ SOURCES += \
         mainwindow.cpp \
         src/RtMidi.cpp \
     src/QRtMidiIn.cpp \
-    src/Bridge.cpp
+    src/Bridge.cpp \
+    src/PortLatency.cpp
 
 HEADERS  += \
     src/RtMidi.h \
@@ -26,12 +27,9 @@ HEADERS  += \
     mainwindow.h \
     src/QRtMidiIn.h \
     src/Bridge.h \
-    src/fixlatency.h
+    src/PortLatency.h
 
 FORMS    += mainwindow.ui
-
-# libftdi
-#LIBS += -lftdi
 
 # qextserialport
 
@@ -73,12 +71,11 @@ win32 {
 # latency fixes
 
 linux-g++ {
-   SOURCES += src/fixlatency_linux.cpp
+   SOURCES += src/PortLatency_linux.cpp
 }
 win32 {
-   SOURCES += src/fixlatency_win32.cpp
+   SOURCES += src/PortLatency_win32.cpp
 }
-
 
 # Resources
 

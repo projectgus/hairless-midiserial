@@ -4,6 +4,7 @@
 #include <QVector>
 #include <QIODevice>
 #include <stdint.h>
+#include "PortLatency.h"
 
 // MIDI message masks
 #define MSG_MASK 0x80
@@ -28,7 +29,8 @@ Bridge::Bridge(QObject *parent) :
         serialBuf(),
         midiIn(NULL),
         midiOut(NULL),
-        serial(NULL)
+        serial(NULL),
+        latency(NULL)
 {
 
 }
@@ -36,7 +38,13 @@ Bridge::Bridge(QObject *parent) :
 void Bridge::attach(QString serialName, PortSettings &serialSettings, int midiInPort, int midiOutPort)
 {
     if(serialName.length() && serialName != TEXT_NOT_CONNECTED) {
-        emit displayMessage(QString("Opening serial port '%1'").arg(serialName));
+        // Latency fixups
+        latency = new PortLatency(serialName);
+        connect(latency, SIGNAL(debugMessage(QString)), this, SIGNAL(debugMessage(QString)));
+        connect(latency, SIGNAL(errorMessage(QString)), this, SIGNAL(displayMessage(QString)));
+        latency->fixLatency();
+
+        emit displayMessage(QString("Opening serial port '%1'...").arg(serialName));
         this->serial = new QextSerialPort(serialName, serialSettings);
         connect(this->serial, SIGNAL(readyRead()), this, SLOT(onSerialAvailable()));
         this->serial->open(QIODevice::ReadWrite);
@@ -78,6 +86,9 @@ void Bridge::attach(QString serialName, PortSettings &serialSettings, int midiIn
 Bridge::~Bridge()
 {
     emit displayMessage("Closing bridge " + bridgeName());
+    if(this->latency) {
+        this->latency->resetLatency();
+    }
     delete this->midiIn;
     delete this->midiOut;
     delete this->serial;
