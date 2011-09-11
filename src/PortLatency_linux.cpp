@@ -39,15 +39,18 @@ bool PortLatency::swapAsync(bool setAsyncMode)
     if(isSwitched == setAsyncMode) {
         return true;
     }
+    if(!portName.startsWith("/dev/")) {
+        portName.prepend("/dev/");
+    }
     int fd = open(portName.toAscii().data(), O_NONBLOCK);
     if(fd <= 0) {
-        emit errorMessage(QString("Failed to open serial port device %1").arg(portName));
+        emit errorMessage(QString("Failed to open serial port device %1 to lower latency").arg(portName));
         return false;
     }
     struct serial_struct ser_info;
     int r = ioctl(fd, TIOCGSERIAL, &ser_info);
     if(r) {
-        emit errorMessage(QString("Failed to get serial port info for %1").arg(portName));
+        emit errorMessage(QString("Failed to get serial port info for %1, cannot set low latency mode").arg(portName));
         close(fd);
         return false;
     }
