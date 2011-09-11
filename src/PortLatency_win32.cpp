@@ -23,7 +23,7 @@ HKEY PortLatency::openFTDIDeviceParameters()
 
     // Look through available FTDI devices
     int index = 0;
-    HKEY paramKey = 0;
+    HKEY readOnlyKey = 0, paramKey = 0;
     while(1) {
         if(paramKey) {
           RegCloseKey(paramKey);
@@ -31,7 +31,7 @@ HKEY PortLatency::openFTDIDeviceParameters()
         }
         DWORD subkey_sz = 140;
         wchar_t subkey[subkey_sz];
-        r = RegEnumKeyEx(key, index++, subkey, &subkey_sz, 0, NULL, NULL, NULL);
+        r = RegEnumKeyEx(key, index++, subkey, &subkey_sz, 0, NULL, NULL, NULL);        
         if(r) {
             if(r==ERROR_NO_MORE_ITEMS)
                 emit debugMessage(QString("Port %1 doesn't seem to be an FTDI device. No latency tricks will be attempted.").arg(portName));
@@ -40,7 +40,7 @@ HKEY PortLatency::openFTDIDeviceParameters()
             break;
         }
         QString paramPath = QString("%1\\0000\\Device Parameters").arg(QString::fromWCharArray(subkey));
-        r = RegOpenKeyEx(key, paramPath.toStdWString().c_str(), 0, KEY_READ|KEY_SET_VALUE, &paramKey);
+        r = RegOpenKeyEx(key, paramPath.toStdWString().c_str(), 0, KEY_READ, &readOnlyKey);
         if(r) {
             continue;
         }
@@ -48,10 +48,15 @@ HKEY PortLatency::openFTDIDeviceParameters()
         wchar_t regPortName[regPortName_sz];
         memset(regPortName, 0, sizeof(regPortName));
         DWORD type;
-        r = RegQueryValueEx(paramKey, L"PortName", NULL, &type, (LPBYTE)&regPortName, &regPortName_sz);
+        r = RegQueryValueEx(readOnlyKey, L"PortName", NULL, &type, (LPBYTE)&regPortName, &regPortName_sz);
         if(!r && portName == QString::fromWCharArray(regPortName)) {
-            break;
+           r = RegOpenKeyEx(readOnlyKey, NULL, 0, KEY_READ|KEY_SET_VALUE, &paramKey);
+           if(r) {
+               emit errorMessage("Port is an FTDI device, but we don't have administrator access to change the latency setting.");
+           }
         }
+        RegCloseKey(readOnlyKey);
+        if(paramKey) break;
     }
     RegCloseKey(key);
     return paramKey;
