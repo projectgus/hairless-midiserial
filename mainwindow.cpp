@@ -110,7 +110,7 @@ void MainWindow::refreshSerial()
     ui->cmbSerial->addItem(TEXT_NOT_CONNECTED);
     QList<QextPortInfo> ports = QextSerialEnumerator::getPorts();
     for(QList<QextPortInfo>::iterator it = ports.begin(); it != ports.end(); it++) {
-        ui->cmbSerial->addItem(it->friendName, QVariant(it->physName));
+        ui->cmbSerial->addItem(it->friendName, QVariant(it->portName));
         if(current == it->friendName) {
             ui->cmbSerial->setCurrentIndex(ui->cmbSerial->count() - 1);
         }
