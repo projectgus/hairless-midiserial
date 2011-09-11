@@ -16,20 +16,27 @@ DEFINES +=APPNAME=\"hairless-midiserial\"
 SOURCES += \
         main.cpp\
         mainwindow.cpp \
-        src/RtMidi.cpp \
-    src/QRtMidiIn.cpp \
-    src/Bridge.cpp \
-    src/PortLatency.cpp
+        src/Bridge.cpp \
 
 HEADERS  += \
-    src/RtMidi.h \
-    src/RtError.h \
     mainwindow.h \
-    src/QRtMidiIn.h \
     src/Bridge.h \
-    src/PortLatency.h
 
-FORMS    += mainwindow.ui
+FORMS += mainwindow.ui
+
+# Universal binary for OS X
+
+macx {
+    CONFIG += ppc x86
+}
+
+
+# Static flags for windows
+
+win32 {
+  QMAKE_LFLAGS += -static -static-libgcc
+}
+
 
 # qextserialport
 
@@ -46,7 +53,6 @@ macx {
 }
 
 win32 {
-  QMAKE_LFLAGS += -static -static-libgcc
   SOURCES          += qextserialport/win_qextserialport.cpp \
                       qextserialport/qextserialenumerator_win.cpp
   DEFINES          += WINVER=0x0501 # needed for mingw to pull in appropriate dbt business...probably a better way to do this
@@ -55,26 +61,44 @@ win32 {
 
 # RtMidi
 
-unix:!macx { # linux doesn't get picked up, not sure what else to use
+HEADERS +=    src/RtMidi.h \
+              src/RtError.h \
+              src/QRtMidiIn.h \
+
+SOURCES +=    src/RtMidi.cpp \
+              src/QRtMidiIn.cpp
+
+linux-g++ { # linux doesn't get picked up, not sure what else to use
   DEFINES += __LINUX_ALSASEQ__
   CONFIG += link_pkgconfig x11
   PKGCONFIG += alsa
   LIBS += -lpthread
 }
-
 win32 {
   DEFINES += __WINDOWS_MM__
   LIBS += -lwinmm
 }
+macx {
+    DEFINES += __MACOSX_CORE__
+    LIBS += -framework \
+        CoreMidi \
+        -framework \
+        CoreAudio \
+        -framework \
+        CoreFoundation
+}
 
-
-# latency fixes
-
+# PortLatency
+SOURCES += src/PortLatency.cpp
+HEADERS += src/PortLatency.h
 linux-g++ {
    SOURCES += src/PortLatency_linux.cpp
 }
 win32 {
    SOURCES += src/PortLatency_win32.cpp
+}
+macx {
+   SOURCES += src/PortLatency_osx.cpp
 }
 
 # Resources
