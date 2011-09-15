@@ -3,8 +3,8 @@
 #include "qextserialport/qextserialenumerator.h"
 #include <QTimer>
 
-const int SCROLLBACK_LINES = 250;
-const int LED_BLINKTIME= 100; // ms
+const int SCROLLBACK_LINES = 50;
+const int LED_BLINKTIME= 75; // ms
 
 const QString RES_LED_ON = ":/images/images/led-on.png";
 const QString RES_LED_OFF = ":/images/images/led-off.png";
