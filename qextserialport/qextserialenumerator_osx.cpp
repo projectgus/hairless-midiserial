@@ -212,7 +212,7 @@ void QextSerialEnumerator::setUpNotifications( )
 
     kernResult = IOMasterPort(MACH_PORT_NULL, &masterPort);
     if (KERN_SUCCESS != kernResult) {
-        qDebug() << "IOMasterPort returned:" << kernResult;
+        qDebug("IOMasterPort returned: %d", kernResult);
         return;
     }
 
@@ -248,7 +248,7 @@ void QextSerialEnumerator::setUpNotifications( )
     kernResult = IOServiceAddMatchingNotification(notificationPortRef, kIOMatchedNotification, classesToMatch,
                                                   deviceDiscoveredCallbackOSX, this, &portIterator);
     if (kernResult != KERN_SUCCESS) {
-        qDebug() << "IOServiceAddMatchingNotification return:" << kernResult;
+        qDebug("IOServiceAddMatchingNotification return: %d", kernResult);
         return;
     }
 
@@ -258,7 +258,7 @@ void QextSerialEnumerator::setUpNotifications( )
     kernResult = IOServiceAddMatchingNotification(notificationPortRef, kIOMatchedNotification, cdcClassesToMatch,
                                                   deviceDiscoveredCallbackOSX, this, &portIterator);
     if (kernResult != KERN_SUCCESS) {
-        qDebug() << "IOServiceAddMatchingNotification return:" << kernResult;
+        qDebug("IOServiceAddMatchingNotification return: %d", kernResult);
         return;
     }
 
@@ -268,7 +268,7 @@ void QextSerialEnumerator::setUpNotifications( )
     kernResult = IOServiceAddMatchingNotification(notificationPortRef, kIOTerminatedNotification, classesToMatch,
                                                   deviceTerminatedCallbackOSX, this, &portIterator);
     if (kernResult != KERN_SUCCESS) {
-        qDebug() << "IOServiceAddMatchingNotification return:" << kernResult;
+        qDebug("IOServiceAddMatchingNotification return: %d", kernResult);
         return;
     }
 
@@ -278,7 +278,7 @@ void QextSerialEnumerator::setUpNotifications( )
     kernResult = IOServiceAddMatchingNotification(notificationPortRef, kIOTerminatedNotification, cdcClassesToMatch,
                                                   deviceTerminatedCallbackOSX, this, &portIterator);
     if (kernResult != KERN_SUCCESS) {
-        qDebug() << "IOServiceAddMatchingNotification return:" << kernResult;
+        qDebug("IOServiceAddMatchingNotification return: %d", kernResult);
         return;
     }
 
