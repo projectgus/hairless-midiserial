@@ -10,6 +10,7 @@
  */
 
 #include <QObject>
+#include <QTime>
 #include "RtMidi.h"
 #include "QRtMidiIn.h"
 #include "qextserialport/qextserialport.h"
@@ -52,6 +53,9 @@ private:
     int scanSerialDebugMessage(QByteArray &buf);
     int scanSerialMidiMessage(QByteArray &buf);
 
+    QString applyTimeStamp(QString message);
+    QString describeMIDI(QByteArray &buf, int *msg_len_out);
+
     QByteArray serialBuf;
     QRtMidiIn *midiIn;
     RtMidiOut *midiOut;
@@ -59,6 +63,7 @@ private:
     int midiOutPort;
     QextSerialPort *serial;
     PortLatency *latency;
+    QTime attachTime;
 };
 
 #endif // BRIDGE_H

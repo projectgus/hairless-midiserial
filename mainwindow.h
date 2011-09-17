@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QComboBox>
 #include <QLabel>
+#include <QTime>
 #include "src/RtMidi.h"
 #include "src/Bridge.h"
 

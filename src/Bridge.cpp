@@ -12,8 +12,8 @@
 #define TAG_MASK 0xF0
 
 
-#define TAG_NOTE_ON 0x80
-#define TAG_NOTE_OFF 0x90
+#define TAG_NOTE_OFF 0x80
+#define TAG_NOTE_ON 0x90
 #define TAG_KEY_PRESSURE 0xA0
 #define TAG_CONTROLLER 0xB0
 #define TAG_PROGRAM 0xC0
@@ -30,9 +30,9 @@ Bridge::Bridge(QObject *parent) :
         midiIn(NULL),
         midiOut(NULL),
         serial(NULL),
-        latency(NULL)
+        latency(NULL),
+        attachTime(QTime::currentTime())
 {
-
 }
 
 void Bridge::attach(QString serialName, PortSettings &serialSettings, int midiInPort, int midiOutPort)
@@ -48,6 +48,7 @@ void Bridge::attach(QString serialName, PortSettings &serialSettings, int midiIn
         this->serial = new QextSerialPort(serialName, serialSettings);
         connect(this->serial, SIGNAL(readyRead()), this, SLOT(onSerialAvailable()));
         this->serial->open(QIODevice::ReadWrite);
+        attachTime = QTime::currentTime();
     }
 
     // MIDI out
@@ -85,7 +86,7 @@ void Bridge::attach(QString serialName, PortSettings &serialSettings, int midiIn
 
 Bridge::~Bridge()
 {
-    emit displayMessage("Closing bridge " + bridgeName());
+    emit displayMessage(applyTimeStamp("Closing bridge " + bridgeName()));
     if(this->latency) {
         this->latency->resetLatency();
     }
@@ -105,7 +106,8 @@ QString Bridge::bridgeName()
 
 void Bridge::onMidiIn(double timeStamp, QByteArray message)
 {
-    emit debugMessage(QString("MIDI In: %2").arg(timeStamp).arg(QString(message.toHex())));
+    QString description = describeMIDI(message, 0);
+    emit debugMessage(QString("MIDI In: %2").arg(timeStamp).arg(description));
     emit midiReceived();
     while(message.length() < 3) {
         message.append((char)0); // pad short MIDI messages, as per ttymidi
@@ -120,7 +122,6 @@ void Bridge::onSerialAvailable()
 {
     emit serialTraffic();
     QByteArray newData = this->serial->readAll();
-    emit debugMessage(QString("Serial In: %1").arg(QString(newData.toHex())));
 
     serialBuf.append(newData);
     while(int n = tryMatchSerial(serialBuf))
@@ -158,8 +159,9 @@ int Bridge::scanSerialNoise(QByteArray &buf)
     int n = 0;
     while( n < buf.size() && ( buf[n] & MSG_MASK) == 0 ) { n++; }  // Trim any non-MIDI message flags
     if(n) {
-        emit displayMessage(QString("Error: got nonsense MIDI data: %1").arg(QString(buf.left(n).toHex())));
+        emit displayMessage(applyTimeStamp(QString("Error: got nonsense MIDI data: %1").arg(QString(buf.left(n).toHex()))));
     }
+
     return n;
 }
 
@@ -178,10 +180,10 @@ int Bridge::scanSerialDebugMessage(QByteArray &buf)
         return 0; // incomplete
     }
     if(buf[1] || buf[2]) {
-        emit displayMessage(QString("Error, malformed ttymidi debug message: %1").arg(QString(buf.toHex())));
+        emit displayMessage(applyTimeStamp(QString("Error, malformed ttymidi debug message: %1").arg(QString(buf.toHex()))));
         return buf.length(); // just drop everything, we're obviously not getting what we expected
     }
-    emit displayMessage(QString("Debug: %1").arg(QString(buf.mid(4, buf[3]).toHex())));
+    emit displayMessage(applyTimeStamp(QString("Serial Says: %1").arg(QString::fromAscii(buf.mid(4, buf[3]).data()))));
     return 4 + buf[3];
 }
 
@@ -192,41 +194,114 @@ int Bridge::scanSerialDebugMessage(QByteArray &buf)
  */
 int Bridge::scanSerialMidiMessage(QByteArray &buf)
 {
-    uint8_t msg = buf[0];
-    uint8_t tag = msg & TAG_MASK;
-    uint8_t channel = msg & CHANNEL_MASK;
-    int n = 0;
-    switch(tag) {
-    case TAG_PROGRAM:
-    case TAG_CHANNEL_PRESSURE:
-        n = 2;
-        break;
-    case TAG_NOTE_ON:
-    case TAG_NOTE_OFF:
-    case TAG_KEY_PRESSURE:
-    case TAG_CONTROLLER:
-    case TAG_PITCH_BEND:
-        n = 3;
-        break;
-    case TAG_SPECIAL:
-        n = channel < 3 ? 3 : channel < 6 ? 2 : 1;
-        break;
-    default:
-        emit displayMessage(QString("Error: Unknown MIDI message %1").arg(QString(buf.toHex())));
+    int msg_len = 0;
+    QString description = describeMIDI(buf, &msg_len);
+
+    if(buf.length() < msg_len) { // incomplete message, wait for buffer to fill more
         return 0;
     }
 
-    if(buf.length() < n) {
-        return 0; // incomplete buffer for message type
-    }
+    emit debugMessage(applyTimeStamp(QString("Serial In: ").append(description)));
 
-    // TODO: log debug message
-
-    if(midiOut) {
-        std::vector<uint8_t> message = std::vector<uint8_t>(buf.begin(), buf.begin()+n);
+    if(midiOut && msg_len) {
+        std::vector<uint8_t> message = std::vector<uint8_t>(buf.begin(), buf.begin()+msg_len);
         midiOut->sendMessage(&message);
         emit midiSent();
     }
-    return n;
+    return msg_len;
+}
+
+/*
+ * Given a buffer containing what is hopefully a MIDI message,
+ * return a string describing the MIDI message and (optionally)
+ * also let the caller know how long the MIDI message is
+ */
+QString Bridge::describeMIDI(QByteArray &buf, int *msg_len_out)
+{
+    uint8_t msg = buf[0];
+    uint8_t tag = msg & TAG_MASK;
+    uint8_t channel = msg & CHANNEL_MASK;
+    int msg_len = 0;
+    const char *desc= 0;
+    if(msg_len_out) {
+        *msg_len_out = 0;
+    }
+
+    // Work out what we have
+
+    switch(tag) {
+    case TAG_PROGRAM:
+        desc = "Program change %1";
+        msg_len = 2;
+        break;
+    case TAG_CHANNEL_PRESSURE:
+        desc = "Ch %1: Pressure change";
+        msg_len = 2;
+        break;
+    case TAG_NOTE_ON:
+        desc = "Ch %1: Note %2 on  velocity %3";
+        msg_len = 3;
+        break;
+    case TAG_NOTE_OFF:
+        desc = "Ch %1: Note %2 off velocity %3";
+        msg_len = 3;
+        break;
+    case TAG_KEY_PRESSURE:
+        desc = "Ch %1: Note %2 pressure %3";
+        msg_len = 3;
+        break;
+    case TAG_CONTROLLER:
+        desc = "Ch %1: Controller %2 value %3";
+        msg_len = 3;
+        break;
+    case TAG_PITCH_BEND:
+        desc = "Ch %1: Pitch bend %2";
+        msg_len = 3; // pitch bend is special, see below
+        break;
+    case TAG_SPECIAL:
+        if(channel < 3) {
+            desc = "System Message #%1: %2 %3";
+            msg_len = 3;
+        } else if (channel < 6) {
+            desc = "System Message #%1: %2";
+            msg_len = 2;
+        } else {
+            desc = "System Message #%1";
+            msg_len = 1;
+        }
+        break;
+    default:
+        return QString("Unknown MIDI message %1").arg(QString(buf.toHex()));
+    }
+
+    if(msg_len_out) {
+        *msg_len_out = msg_len;
+    }
+
+    // Check the length
+
+    if(buf.length() < msg_len) {
+        return QString("Incomplete MIDI message (length %1, needs %2)").arg(buf.length()).arg(msg_len); // incomplete buffer for message type
+    }
+
+    // Format the output
+
+    QString qdesc = QString(desc).arg((int) channel);
+
+    if(tag == TAG_PITCH_BEND) { // special
+        return qdesc.arg((int) buf[1] | buf[2]<<7 );
+    }
+
+    for(int i = 1; i < msg_len; i++) {
+            qdesc = qdesc.arg((int) buf[i]);
+    }
+    return qdesc;
+}
+
+QString Bridge::applyTimeStamp(QString message)
+{
+    QTime now = QTime::currentTime();
+    float msecs = this->attachTime.msecsTo(now) / 1000.0;
+    return QString("+%1 - %2").arg(msecs, 4).arg(message);
 }
 

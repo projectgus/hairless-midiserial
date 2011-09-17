@@ -132,12 +132,12 @@ void MainWindow::onValueChanged()
 {
     delete bridge;
     bridge = NULL;
-    ui->lst_debug->clear();
     if(!ui->chk_on->isChecked()
             || ( ui->cmbSerial->currentIndex() == 0
                     && ui->cmbMidiIn->currentIndex() == 0
                     && ui->cmbMidiOut->currentIndex() == 0 ))
         return; // No bridge
+    ui->lst_debug->clear();
     int midiIn =ui->cmbMidiIn->currentIndex()-1;
     int midiOut = ui->cmbMidiOut->currentIndex()-1;
     PortSettings settings;
@@ -161,7 +161,7 @@ void MainWindow::onDisplayMessage(QString message)
 {
     QListWidget *lst = ui->lst_debug;
     if(lst->count() > SCROLLBACK_LINES) {
-        lst->removeItemWidget(lst->item(lst->count()-1));
+        lst->takeItem(0);
     }
     lst->addItem(message);
     lst->scrollToBottom();
