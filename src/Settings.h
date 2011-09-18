@@ -32,7 +32,7 @@ public:
         result.FlowControl = (FlowType)  settings.value("flowControl", (int)FLOW_OFF).toInt();
         result.Parity = (ParityType) settings.value("parity", (int)PAR_NONE).toInt();
         result.StopBits = (StopBitsType) settings.value("stopBits", (int)STOP_1).toInt();
-        result.Timeout_Millisec = 0; // not used when qextserialport is event-driven, anyhow
+        result.Timeout_Millisec = 1; // not used when qextserialport is event-driven, anyhow
         return result;
     }
 
