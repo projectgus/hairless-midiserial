@@ -24,8 +24,8 @@
 #define MSG_DEBUG 0xFF // special ttymidi "debug output" MIDI message tag
 
 
-Bridge::Bridge(QObject *parent) :
-        QObject(parent),
+Bridge::Bridge() :
+        QObject(),
         serialBuf(),
         midiIn(NULL),
         midiOut(NULL),

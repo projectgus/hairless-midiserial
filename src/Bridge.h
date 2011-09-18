@@ -27,7 +27,7 @@ class Bridge : public QObject
 {
     Q_OBJECT
 public:
-    explicit Bridge(QObject *parent);
+    explicit Bridge();
     void attach(QString serialName, PortSettings serialSettings, int midiInPort, int midiOutPort, QThread *workerThread);
 
     // Destroying an existing Bridge will cleanup state & release all ports

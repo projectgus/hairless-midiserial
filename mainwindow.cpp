@@ -195,7 +195,7 @@ void MainWindow::onValueChanged()
     int midiIn =ui->cmbMidiIn->currentIndex()-1;
     int midiOut = ui->cmbMidiOut->currentIndex()-1;
     ui->lst_debug->addItem("Starting MIDI<->Serial Bridge...");
-    bridge = new Bridge(this);
+    bridge = new Bridge();
     connect(bridge, SIGNAL(debugMessage(QString)), SLOT(onDebugMessage(QString)));
     connect(bridge, SIGNAL(displayMessage(QString)), SLOT(onDisplayMessage(QString)));
     connect(bridge, SIGNAL(midiReceived()), SLOT(onMidiReceived()));
