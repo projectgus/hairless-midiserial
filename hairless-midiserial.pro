@@ -46,6 +46,12 @@ win32 {
   QMAKE_LFLAGS += -static -static-libgcc
 }
 
+# Icon stuff
+
+win32 {
+  RC_FILE = "images/icon.rc"
+}
+
 
 # qextserialport
 
