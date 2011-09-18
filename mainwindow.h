@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QTime>
 #include <QMenuBar>
+#include <QTimer>
 #include "src/RtMidi.h"
 #include "src/Bridge.h"
 
@@ -30,7 +31,6 @@ private:
     Bridge *bridge;
     QPixmap pxLedOn;
     QPixmap pxLedOff;
-    QList<QLabel *> activeLeds;
     QThread *workerThread;
     int scrollbackSize;
 
@@ -39,16 +39,11 @@ private:
     void refreshMidiIn();
     void refreshMidiOut();
     void refreshMidi(QComboBox *combo, RtMidi *midi);
-    void ledOn(QLabel *led);
 
 private slots:
     void onValueChanged();
     void onDisplayMessage(QString message);
     void onDebugMessage(QString message);
-    void onMidiSent();
-    void onMidiReceived();
-    void onSerialTraffic();
-    void ledOffTimer();
     void onDebugClicked(bool value);
     void showPreferences();
     void showAboutBox();

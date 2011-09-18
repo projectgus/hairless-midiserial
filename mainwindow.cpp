@@ -4,12 +4,6 @@
 #include "src/Settings.h"
 #include "src/settingsdialog.h"
 #include "src/aboutdialog.h"
-#include <QTimer>
-
-const int LED_BLINKTIME= 75; // ms
-
-const QString RES_LED_ON = ":/images/images/led-on.png";
-const QString RES_LED_OFF = ":/images/images/led-off.png";
 
 static void selectIfAvailable(QComboBox *box, QString itemText)
 {
@@ -31,10 +25,6 @@ MainWindow::MainWindow(QWidget *parent) :
     // Fixed width, minimum height
     this->setMinimumSize(this->size());
     this->setMaximumSize(this->size().width(), 2000);
-
-    // Load LED images
-    this->pxLedOn = QPixmap::fromImage(QImage(RES_LED_ON));
-    this->pxLedOff = QPixmap::fromImage(QImage(RES_LED_OFF));
 
     // Plumb event filter for focus events
     ui->cmbMidiIn->installEventFilter(this);
@@ -67,9 +57,9 @@ MainWindow::MainWindow(QWidget *parent) :
     onValueChanged();
 }
 
+
 MainWindow::~MainWindow()
 {
-    activeLeds.clear();
     bridge->deleteLater();
     delete ui;
 }
@@ -198,9 +188,9 @@ void MainWindow::onValueChanged()
     bridge = new Bridge();
     connect(bridge, SIGNAL(debugMessage(QString)), SLOT(onDebugMessage(QString)));
     connect(bridge, SIGNAL(displayMessage(QString)), SLOT(onDisplayMessage(QString)));
-    connect(bridge, SIGNAL(midiReceived()), SLOT(onMidiReceived()));
-    connect(bridge, SIGNAL(midiSent()), SLOT(onMidiSent()));
-    connect(bridge, SIGNAL(serialTraffic()), SLOT(onSerialTraffic()));
+    connect(bridge, SIGNAL(midiReceived()), ui->led_midiin, SLOT(blinkOn()));
+    connect(bridge, SIGNAL(midiSent()), ui->led_midiout, SLOT(blinkOn()));
+    connect(bridge, SIGNAL(serialTraffic()), ui->led_serial, SLOT(blinkOn()));
     bridge->attach(ui->cmbSerial->itemData(ui->cmbSerial->currentIndex()).toString(), Settings::getPortSettings(), midiIn, midiOut, workerThread);
 }
 
@@ -218,38 +208,6 @@ void MainWindow::onDebugMessage(QString message)
 {
     if(ui->chk_debug->isChecked())
         onDisplayMessage(message);
-}
-
-void MainWindow::onMidiReceived()
-{
-    ledOn(ui->led_midiin);
-}
-
-void MainWindow::onMidiSent()
-{
-    ledOn(ui->led_midiout);
-}
-
-void MainWindow::onSerialTraffic()
-{
-    ledOn(ui->led_serial);
-}
-
-void MainWindow::ledOn(QLabel *led)
-{
-    led->setPixmap(pxLedOn);
-    activeLeds.push_back(led);
-    QTimer::singleShot(LED_BLINKTIME, this, SLOT(ledOffTimer()));
-}
-
-void MainWindow::ledOffTimer()
-{
-    if(activeLeds.empty())
-        return;
-    QLabel *led = activeLeds.front();
-    activeLeds.pop_front();
-    if(!activeLeds.contains(led))
-        led->setPixmap(pxLedOff);
 }
 
 void MainWindow::resizeEvent(QResizeEvent *)

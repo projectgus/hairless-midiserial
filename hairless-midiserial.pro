@@ -20,14 +20,16 @@ SOURCES += \
         mainwindow.cpp \
         src/Bridge.cpp \
     src/settingsdialog.cpp \
-    src/aboutdialog.cpp
+    src/aboutdialog.cpp \
+    src/BlinkenLight.cpp
 
 HEADERS  += \
     mainwindow.h \
     src/Bridge.h \
     src/Settings.h \
     src/settingsdialog.h \
-    src/aboutdialog.h
+    src/aboutdialog.h \
+    src/BlinkenLight.h
 
 FORMS += mainwindow.ui \
     src/settingsdialog.ui \

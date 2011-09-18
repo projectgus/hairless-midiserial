@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>604</width>
-    <height>262</height>
+    <height>278</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -171,7 +171,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLabel" name="led_serial">
+   <widget class="BlinkenLight" name="led_serial">
     <property name="geometry">
      <rect>
       <x>185</x>
@@ -187,7 +187,7 @@
      <pixmap resource="resources.qrc">:/images/images/led-off.png</pixmap>
     </property>
    </widget>
-   <widget class="QLabel" name="led_midiout">
+   <widget class="BlinkenLight" name="led_midiout">
     <property name="geometry">
      <rect>
       <x>410</x>
@@ -203,7 +203,7 @@
      <pixmap resource="resources.qrc">:/images/images/led-off.png</pixmap>
     </property>
    </widget>
-   <widget class="QLabel" name="led_midiin">
+   <widget class="BlinkenLight" name="led_midiin">
     <property name="geometry">
      <rect>
       <x>410</x>
@@ -266,6 +266,13 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>BlinkenLight</class>
+   <extends>QLabel</extends>
+   <header>src/BlinkenLight.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>chk_on</tabstop>
   <tabstop>cmbSerial</tabstop>
