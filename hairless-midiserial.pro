@@ -11,22 +11,27 @@ TEMPLATE = app
 
 DEFINES +=APPNAME=\"hairless-midiserial\"
 
+DEFINES += VERSION=\\\"0.1-pre\\\"
+
 # Main Program
 
 SOURCES += \
         main.cpp\
         mainwindow.cpp \
         src/Bridge.cpp \
-    src/settingsdialog.cpp
+    src/settingsdialog.cpp \
+    src/aboutdialog.cpp
 
 HEADERS  += \
     mainwindow.h \
     src/Bridge.h \
     src/Settings.h \
-    src/settingsdialog.h
+    src/settingsdialog.h \
+    src/aboutdialog.h
 
 FORMS += mainwindow.ui \
-    src/settingsdialog.ui
+    src/settingsdialog.ui \
+    src/aboutdialog.ui
 
 # Universal binary for OS X
 

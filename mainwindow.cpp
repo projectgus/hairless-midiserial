@@ -3,6 +3,7 @@
 #include "qextserialport/qextserialenumerator.h"
 #include "src/Settings.h"
 #include "src/settingsdialog.h"
+#include "src/aboutdialog.h"
 #include <QTimer>
 
 const int LED_BLINKTIME= 75; // ms
@@ -81,7 +82,7 @@ void MainWindow::showPreferences()
 
 void MainWindow::showAboutBox()
 {
-
+    AboutDialog().exec();
 }
 
 bool MainWindow::eventFilter(QObject *object, QEvent *event) {
