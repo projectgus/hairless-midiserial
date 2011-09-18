@@ -55,6 +55,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Get started
     onValueChanged();
+
+#ifdef Q_OS_MAC
+    // hack: avoid an empty dummy File menu on OS X
+    // there might be a better way to do this, but hide() and clear() don't work.
+    ui->menuFile->setTitle(""); // Doesn't do anything on OS X
+#endif
+
 }
 
 

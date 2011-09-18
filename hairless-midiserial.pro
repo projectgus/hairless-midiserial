@@ -53,7 +53,10 @@ win32 {
 win32 {
   RC_FILE = "images/icon.rc"
 }
-
+macx {
+  ICON = "images/icon.icns"
+}
+# linux has no baked-in icon support, but we load a resource to use as a window icon
 
 # qextserialport
 
