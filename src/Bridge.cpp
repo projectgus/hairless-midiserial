@@ -7,21 +7,21 @@
 #include "PortLatency.h"
 
 // MIDI message masks
-#define MSG_MASK 0x80
-#define CHANNEL_MASK 0x0F
-#define TAG_MASK 0xF0
+const uint8_t MSG_MASK = 0x80;
+const uint8_t CHANNEL_MASK = 0x0F;
+const uint8_t  TAG_MASK = 0xF0;
 
 
-#define TAG_NOTE_OFF 0x80
-#define TAG_NOTE_ON 0x90
-#define TAG_KEY_PRESSURE 0xA0
-#define TAG_CONTROLLER 0xB0
-#define TAG_PROGRAM 0xC0
-#define TAG_CHANNEL_PRESSURE 0xD0
-#define TAG_PITCH_BEND 0xE0
-#define TAG_SPECIAL 0xF0
+const uint8_t TAG_NOTE_OFF = 0x80;
+const uint8_t TAG_NOTE_ON = 0x90;
+const uint8_t TAG_KEY_PRESSURE = 0xA0;
+const uint8_t TAG_CONTROLLER = 0xB0;
+const uint8_t TAG_PROGRAM = 0xC0;
+const uint8_t TAG_CHANNEL_PRESSURE = 0xD0;
+const uint8_t TAG_PITCH_BEND = 0xE0;
+const uint8_t TAG_SPECIAL = 0xF0;
 
-#define MSG_DEBUG 0xFF // special ttymidi "debug output" MIDI message tag
+const uint8_t MSG_DEBUG = 0xFF; // special ttymidi "debug output" MIDI message tag
 
 
 Bridge::Bridge() :
@@ -135,6 +135,9 @@ void Bridge::onSerialAvailable()
 int Bridge::tryMatchSerial(QByteArray &buf)
 {
     int n;
+    while(buf.length() && (uint8_t)buf[0] == 0) {
+        buf.remove(0, 1);
+    }
     if (buf.length() == 0)
         return 0;
     (n = scanSerialNoise(buf) )
@@ -188,7 +191,7 @@ int Bridge::scanSerialDebugMessage(QByteArray &buf)
  */
 int Bridge::scanSerialMidiMessage(QByteArray &buf)
 {
-    if(buf[0] == MSG_DEBUG) {
+    if((uint8_t)buf[0] == MSG_DEBUG) {
         return 0; // incomplete debug message
     }
     int msg_len = 0;
