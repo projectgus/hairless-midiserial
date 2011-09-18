@@ -25,6 +25,9 @@ MainWindow::MainWindow(QWidget *parent) :
     // Fixed width, minimum height
     this->setMinimumSize(this->size());
     this->setMaximumSize(this->size().width(), 2000);
+#ifdef Q_OS_LINUX
+    this->setWindowIcon(QIcon(":/images/images/icon48.png"));
+#endif
 
     // Plumb event filter for focus events
     ui->cmbMidiIn->installEventFilter(this);
