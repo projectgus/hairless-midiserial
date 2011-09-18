@@ -1,13 +1,24 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "qextserialport/qextserialenumerator.h"
+#include "src/Settings.h"
+#include "src/settingsdialog.h"
 #include <QTimer>
 
-const int SCROLLBACK_LINES = 50;
 const int LED_BLINKTIME= 75; // ms
 
 const QString RES_LED_ON = ":/images/images/led-on.png";
 const QString RES_LED_OFF = ":/images/images/led-off.png";
+
+static void selectIfAvailable(QComboBox *box, QString itemText)
+{
+    for(int i = 0; i < box->count(); i++) {
+        if(box->itemText(i) == itemText) {
+            box->setCurrentIndex(i);
+            return;
+        }
+    }
+}
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -28,13 +39,28 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->cmbMidiOut->installEventFilter(this);
     ui->cmbSerial->installEventFilter(this);
 
+    // Load initial state
+    refresh();
+    scrollbackSize=Settings::getScrollbackSize();
+    ui->chk_debug->setChecked( Settings::getDebug() );
+    selectIfAvailable(ui->cmbMidiIn, Settings::getLastMidiIn());
+    selectIfAvailable(ui->cmbMidiOut, Settings::getLastMidiOut());
+    selectIfAvailable(ui->cmbSerial, Settings::getLastSerialPort());
+
     // Plumb signals & slots
     connect(ui->cmbMidiIn, SIGNAL(currentIndexChanged(int)), SLOT(onValueChanged()));
     connect(ui->cmbMidiOut, SIGNAL(currentIndexChanged(int)), SLOT(onValueChanged()));
     connect(ui->cmbSerial, SIGNAL(currentIndexChanged(int)), SLOT(onValueChanged()));
     connect(ui->chk_on, SIGNAL(clicked()), SLOT(onValueChanged()));
+    connect(ui->chk_debug, SIGNAL(clicked(bool)), SLOT(onDebugClicked(bool)));
 
-    refresh();
+    // Menu items
+    connect(ui->actionExit, SIGNAL(triggered()), qApp, SLOT(quit()));
+    connect(ui->actionAbout, SIGNAL(triggered()), SLOT(showAboutBox()));
+    connect(ui->actionPreferences, SIGNAL(triggered()), SLOT(showPreferences()));
+
+    // Get started
+    onValueChanged();
 }
 
 MainWindow::~MainWindow()
@@ -42,6 +68,20 @@ MainWindow::~MainWindow()
     activeLeds.clear();
     delete bridge;
     delete ui;
+}
+
+void MainWindow::showPreferences()
+{
+    SettingsDialog dialog;
+    if(dialog.exec() == QDialog::Accepted) {
+        scrollbackSize=Settings::getScrollbackSize();
+        onValueChanged();
+    }
+}
+
+void MainWindow::showAboutBox()
+{
+
 }
 
 bool MainWindow::eventFilter(QObject *object, QEvent *event) {
@@ -128,10 +168,18 @@ void MainWindow::refreshSerial()
     }
 }
 
+void MainWindow::onDebugClicked(bool value)
+{
+    Settings::setDebug(value);
+}
+
 void MainWindow::onValueChanged()
 {
     delete bridge;
     bridge = NULL;
+    Settings::setLastMidiIn(ui->cmbMidiIn->currentText());
+    Settings::setLastMidiOut(ui->cmbMidiOut->currentText());
+    Settings::setLastSerialPort(ui->cmbSerial->currentText());
     if(!ui->chk_on->isChecked()
             || ( ui->cmbSerial->currentIndex() == 0
                     && ui->cmbMidiIn->currentIndex() == 0
@@ -140,13 +188,6 @@ void MainWindow::onValueChanged()
     ui->lst_debug->clear();
     int midiIn =ui->cmbMidiIn->currentIndex()-1;
     int midiOut = ui->cmbMidiOut->currentIndex()-1;
-    PortSettings settings;
-    settings.BaudRate = BAUD115200;
-    settings.DataBits = DATA_8;
-    settings.FlowControl = FLOW_OFF;
-    settings.Parity = PAR_NONE;
-    settings.StopBits = STOP_1;
-    settings.Timeout_Millisec = 1;
     ui->lst_debug->addItem("Starting MIDI<->Serial Bridge...");
     bridge = new Bridge(this);
     connect(bridge, SIGNAL(debugMessage(QString)), SLOT(onDebugMessage(QString)));
@@ -154,13 +195,13 @@ void MainWindow::onValueChanged()
     connect(bridge, SIGNAL(midiReceived()), SLOT(onMidiReceived()));
     connect(bridge, SIGNAL(midiSent()), SLOT(onMidiSent()));
     connect(bridge, SIGNAL(serialTraffic()), SLOT(onSerialTraffic()));
-    bridge->attach(ui->cmbSerial->itemData(ui->cmbSerial->currentIndex()).toString(), settings, midiIn, midiOut);
+    bridge->attach(ui->cmbSerial->itemData(ui->cmbSerial->currentIndex()).toString(), Settings::getPortSettings(), midiIn, midiOut);
 }
 
 void MainWindow::onDisplayMessage(QString message)
 {
     QListWidget *lst = ui->lst_debug;
-    if(lst->count() > SCROLLBACK_LINES) {
+    if(lst->count() > scrollbackSize) {
         lst->takeItem(0);
     }
     lst->addItem(message);

@@ -5,6 +5,7 @@
 #include <QComboBox>
 #include <QLabel>
 #include <QTime>
+#include <QMenuBar>
 #include "src/RtMidi.h"
 #include "src/Bridge.h"
 
@@ -30,6 +31,7 @@ private:
     QPixmap pxLedOn;
     QPixmap pxLedOff;
     QList<QLabel *> activeLeds;
+    int scrollbackSize;
 
     void refresh();
     void refreshSerial();
@@ -46,6 +48,9 @@ private slots:
     void onMidiReceived();
     void onSerialTraffic();
     void ledOffTimer();
+    void onDebugClicked(bool value);
+    void showPreferences();
+    void showAboutBox();
 };
 
 #endif // MAINWINDOW_H

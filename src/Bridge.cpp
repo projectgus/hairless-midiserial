@@ -35,7 +35,7 @@ Bridge::Bridge(QObject *parent) :
 {
 }
 
-void Bridge::attach(QString serialName, PortSettings &serialSettings, int midiInPort, int midiOutPort)
+void Bridge::attach(QString serialName, PortSettings serialSettings, int midiInPort, int midiOutPort)
 {
     if(serialName.length() && serialName != TEXT_NOT_CONNECTED) {
         // Latency fixups
@@ -86,22 +86,13 @@ void Bridge::attach(QString serialName, PortSettings &serialSettings, int midiIn
 
 Bridge::~Bridge()
 {
-    emit displayMessage(applyTimeStamp("Closing bridge " + bridgeName()));
+    emit displayMessage(applyTimeStamp("Closing MIDI<->Serial bridge..."));
     if(this->latency) {
         this->latency->resetLatency();
     }
     delete this->midiIn;
     delete this->midiOut;
     delete this->serial;
-}
-
-QString Bridge::bridgeName()
-{
-    return QString("(Bridge %1%2%3)")
-                     .arg(midiIn ? QString("Port #%1 -> ").arg(midiInPort) : "")
-                     .arg(serial ? serial->portName() : "NO SERIAL")
-                     .arg(midiOut ? QString(" -> Port #%1").arg(midiOutPort) : "")
-                     ;
 }
 
 void Bridge::onMidiIn(double timeStamp, QByteArray message)

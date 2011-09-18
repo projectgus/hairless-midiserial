@@ -17,12 +17,16 @@ SOURCES += \
         main.cpp\
         mainwindow.cpp \
         src/Bridge.cpp \
+    src/settingsdialog.cpp
 
 HEADERS  += \
     mainwindow.h \
     src/Bridge.h \
+    src/Settings.h \
+    src/settingsdialog.h
 
-FORMS += mainwindow.ui
+FORMS += mainwindow.ui \
+    src/settingsdialog.ui
 
 # Universal binary for OS X
 
