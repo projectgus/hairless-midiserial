@@ -35,8 +35,9 @@ Bridge::Bridge(QObject *parent) :
 {
 }
 
-void Bridge::attach(QString serialName, PortSettings serialSettings, int midiInPort, int midiOutPort)
+void Bridge::attach(QString serialName, PortSettings serialSettings, int midiInPort, int midiOutPort, QThread *workerThread)
 {
+    this->moveToThread(workerThread);
     if(serialName.length() && serialName != TEXT_NOT_CONNECTED) {
         // Latency fixups
         latency = new PortLatency(serialName);
@@ -47,8 +48,9 @@ void Bridge::attach(QString serialName, PortSettings serialSettings, int midiInP
         emit displayMessage(QString("Opening serial port '%1'...").arg(serialName));
         this->serial = new QextSerialPort(serialName, serialSettings);
         connect(this->serial, SIGNAL(readyRead()), this, SLOT(onSerialAvailable()));
-        this->serial->open(QIODevice::ReadWrite);
+        this->serial->open(QIODevice::ReadWrite|QIODevice::Unbuffered);
         attachTime = QTime::currentTime();
+        this->serial->moveToThread(workerThread);
     }
 
     // MIDI out
@@ -74,6 +76,7 @@ void Bridge::attach(QString serialName, PortSettings serialSettings, int midiInP
             emit displayMessage(QString("Opening MIDI In port #%1").arg(midiInPort));
             this->midiInPort = midiInPort;
             this->midiIn = new QRtMidiIn(NAME_MIDI_IN);
+            this->midiIn->moveToThread(workerThread);
             this->midiIn->openPort(midiInPort);
             connect(this->midiIn, SIGNAL(messageReceived(double,QByteArray)), this, SLOT(onMidiIn(double,QByteArray)));
         }
@@ -98,7 +101,7 @@ Bridge::~Bridge()
 void Bridge::onMidiIn(double timeStamp, QByteArray message)
 {
     QString description = describeMIDI(message, 0);
-    emit debugMessage(QString("MIDI In: %2").arg(timeStamp).arg(description));
+    emit debugMessage(applyTimeStamp(QString("MIDI In: %1").arg(description)));
     emit midiReceived();
     while(message.length() < 3) {
         message.append((char)0); // pad short MIDI messages, as per ttymidi

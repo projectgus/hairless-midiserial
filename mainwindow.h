@@ -31,6 +31,7 @@ private:
     QPixmap pxLedOn;
     QPixmap pxLedOff;
     QList<QLabel *> activeLeds;
+    QThread *workerThread;
     int scrollbackSize;
 
     void refresh();

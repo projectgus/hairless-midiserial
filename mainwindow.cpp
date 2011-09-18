@@ -24,7 +24,8 @@ static void selectIfAvailable(QComboBox *box, QString itemText)
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    bridge(NULL)
+    bridge(NULL),
+    workerThread(NULL)
 {
     ui->setupUi(this);
     // Fixed width, minimum height
@@ -41,6 +42,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->cmbSerial->installEventFilter(this);
 
     // Load initial state
+    this->workerThread = new QThread();
+    this->workerThread->start(QThread::HighestPriority);
     refresh();
     scrollbackSize=Settings::getScrollbackSize();
     ui->chk_debug->setChecked( Settings::getDebug() );
@@ -67,7 +70,7 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     activeLeds.clear();
-    delete bridge;
+    bridge->deleteLater();
     delete ui;
 }
 
@@ -138,9 +141,10 @@ void MainWindow::refreshMidi(QComboBox *combo, RtMidi *midi)
            }
         }
     }
-    catch (RtError& err) {
+    catch (RtError err) {
         ui->lst_debug->addItem("Failed to scan for MIDI ports:");
         ui->lst_debug->addItem(QString::fromStdString(err.getMessage()));
+        ui->lst_debug->scrollToBottom();
     }
 }
 
@@ -176,7 +180,8 @@ void MainWindow::onDebugClicked(bool value)
 
 void MainWindow::onValueChanged()
 {
-    delete bridge;
+    bridge->deleteLater();
+    QThread::yieldCurrentThread(); // Try and get any signals from the bridge sent sooner not later
     bridge = NULL;
     Settings::setLastMidiIn(ui->cmbMidiIn->currentText());
     Settings::setLastMidiOut(ui->cmbMidiOut->currentText());
@@ -196,7 +201,7 @@ void MainWindow::onValueChanged()
     connect(bridge, SIGNAL(midiReceived()), SLOT(onMidiReceived()));
     connect(bridge, SIGNAL(midiSent()), SLOT(onMidiSent()));
     connect(bridge, SIGNAL(serialTraffic()), SLOT(onSerialTraffic()));
-    bridge->attach(ui->cmbSerial->itemData(ui->cmbSerial->currentIndex()).toString(), Settings::getPortSettings(), midiIn, midiOut);
+    bridge->attach(ui->cmbSerial->itemData(ui->cmbSerial->currentIndex()).toString(), Settings::getPortSettings(), midiIn, midiOut, workerThread);
 }
 
 void MainWindow::onDisplayMessage(QString message)
