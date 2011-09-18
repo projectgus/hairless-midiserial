@@ -188,6 +188,9 @@ int Bridge::scanSerialDebugMessage(QByteArray &buf)
  */
 int Bridge::scanSerialMidiMessage(QByteArray &buf)
 {
+    if(buf[0] == MSG_DEBUG) {
+        return 0; // incomplete debug message
+    }
     int msg_len = 0;
     QString description = describeMIDI(buf, &msg_len);
 
