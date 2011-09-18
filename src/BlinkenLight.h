@@ -7,7 +7,7 @@
 
 /*
  * A custom QLabel that looks like a blinking LED.
- * Handles blinking off after a specified time, internally.
+ * Handles blinking off after a specified time, all by itself.
  */
 class BlinkenLight : public QLabel
 {

@@ -180,17 +180,21 @@ void MainWindow::onDebugClicked(bool value)
 
 void MainWindow::onValueChanged()
 {
-    bridge->deleteLater();
-    QThread::yieldCurrentThread(); // Try and get any signals from the bridge sent sooner not later
-    bridge = NULL;
+    if(bridge) {
+        bridge->deleteLater();
+        QThread::yieldCurrentThread(); // Try and get any signals from the bridge sent sooner not later
+        QCoreApplication::processEvents();
+        bridge = NULL;
+    }
     Settings::setLastMidiIn(ui->cmbMidiIn->currentText());
     Settings::setLastMidiOut(ui->cmbMidiOut->currentText());
     Settings::setLastSerialPort(ui->cmbSerial->currentText());
     if(!ui->chk_on->isChecked()
             || ( ui->cmbSerial->currentIndex() == 0
                     && ui->cmbMidiIn->currentIndex() == 0
-                    && ui->cmbMidiOut->currentIndex() == 0 ))
-        return; // No bridge
+                    && ui->cmbMidiOut->currentIndex() == 0 )) {
+        return;
+    }
     ui->lst_debug->clear();
     int midiIn =ui->cmbMidiIn->currentIndex()-1;
     int midiOut = ui->cmbMidiOut->currentIndex()-1;
