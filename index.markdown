@@ -9,7 +9,7 @@ Hairless MIDI<->Serial Bridge is a free software tool that makes it easy to conn
 
 <p class="centered"><img src="images/diagram.png" alt="Device to Bridge to MIDI Goodness"></img></p>
 
-<p class="centered"><a href="#requirements">System Requirements</a>  <a href="#downloads">Download</a>  <a href="#gettingstarted">Getting Started</a>  <a href="#FAQ">FAQ</a></p>
+<p class="centered"><a href="#system_requirements">System Requirements</a>  <a href="#downloads">Download</a>  <a href="#getting_started">Getting Started</a>  <a href="#FAQ">FAQ</a></p>
 
 <img src="images/windows.png" alt="Screenshot on Windows"></img>
 
@@ -23,7 +23,6 @@ Hairless MIDI<->Serial Bridge is a free software tool that makes it easy to conn
 
 * Fully compatible with the Linux program  [ttymidi](http://www.varal.org/ttymidi/), and their Ardumidi library (included in the download.)
 
-<a name="requirements"></a>
 ## System Requirements
 
 * **OS X** 10.4 or later, either PowerPC or Intel based Macs.
@@ -39,7 +38,6 @@ Hairless MIDI<->Serial Bridge is a free software tool that makes it easy to conn
     - For help installing MIDI Yoke on Vista or 7, see [here](http://help.touch-able.com/kb/installation/midi-yoke-installation-on-windows-vista-or-windows-7) and [here](http://www.midiox.com/cgi/yabb/YaBB.pl?board=myokent;action=display;num=1299166667).
 
 
-<a name="downloads"></a>
 ## Downloads
 
 * [Hairless MIDI<->Serial Bridge for Mac OS X](https://github.com/downloads/projectgus/hairless-midiserial/hairless-midiserial-0.1-macosx.zip)
@@ -49,19 +47,16 @@ Hairless MIDI<->Serial Bridge is a free software tool that makes it easy to conn
 * [Hairless MIDI<->Serial Bridge for Linux](https://github.com/downloads/projectgus/hairless-midiserial/hairless-midiserial-0.1-linux.tgz)
 
 
-<a name="history"></a>
 ## History
 
 * Version 0.1 - Initial release, 20 September 2011.
 
 
-<a name="source"></a>
 ## Source Code
 
 [Source is all available on github](https://github.com/projectgus/hairless-midiserial).
 
 
-<a name="gettingstarted"></a>
 ## Getting Started
 
 1. Launch "Hairless MIDI<->Serial Bridge" by double-clicking the application.
@@ -96,7 +91,6 @@ serial messages come through.
 at the top of the window.
 
 
-<a name="FAQ"></a>
 ## FAQ
 
 ### I think I found a bug
