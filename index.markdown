@@ -29,7 +29,7 @@ Hairless MIDI<->Serial Bridge is a free software tool that makes it easy to conn
 
 * **Linux**, any common x86 or x64 (with 32-bit compatibility libraries) Linux distribution.
 
-    * If you're a command line user in Linux, you may want to try the very nice [ttymidi](http://www.varal.org/ttymidi/) command line bridge program instead.
+    If you're a command line user in Linux, you may want to try the very nice [ttymidi](http://www.varal.org/ttymidi/) command line bridge program instead.
 
 * **Windows** XP or later, 32- or 64-bit. 
 
