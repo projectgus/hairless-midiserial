@@ -3,11 +3,11 @@ title: The Hairless MIDI<->Serial Bridge
 ---
 <link href="markdown.css" rel="stylesheet"></link>
 
-<p class="centered"><img src="images/logo.png" alt="Hairless MIDI<->Serial Bridge Logo"></img></p>
+<p class="centered"><img src="images/logo.png" alt="Hairless MIDISerial Bridge Logo"></img></p>
 
 Hairless MIDI<->Serial Bridge is a free software tool that makes it easy to connect serial devices (like Arduinos) to send and receive MIDI signals. For Mac OS X, Windows & Linux.
 
-<p class="centered"><img src="images/diagram.png" alt="Device <-> Bridge <-> MIDI Goodness"></img></p>
+<p class="centered"><img src="images/diagram.png" alt="Device to Bridge to MIDI Goodness"></img></p>
 
 <p class="centered"><a href="#requirements">System Requirements</a>  <a href="#downloads">Download</a>  <a href="#gettingstarted">Getting Started</a>  <a href="#FAQ">FAQ</a></p>
 
