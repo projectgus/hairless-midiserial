@@ -1,6 +1,6 @@
-<head>
-<title>The Hairless MIDI<->Serial Bridge</title>
-</head>
+---
+title: The Hairless MIDI<->Serial Bridge
+---
 <link href="markdown.css" rel="stylesheet"></link>
 
 <p class="centered"><img src="images/logo.png" alt="Hairless MIDI<->Serial Bridge Logo"></img></p>
