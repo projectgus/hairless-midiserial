@@ -11,7 +11,7 @@ TEMPLATE = app
 
 DEFINES +=APPNAME=\"hairless-midiserial\"
 
-DEFINES += VERSION=\\\"0.1\\\"
+DEFINES += VERSION=\\\"0.2\\\"
 
 # Main Program
 
