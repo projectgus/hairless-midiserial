@@ -44,14 +44,18 @@ Hairless MIDI<->Serial Bridge is a free software tool that makes it easy to conn
 
 ## Downloads
 
-* [Hairless MIDI<->Serial Bridge for Mac OS X](https://github.com/downloads/projectgus/hairless-midiserial/hairless-midiserial-0.1-macosx.zip)
+* [Hairless MIDI<->Serial Bridge for Mac OS X](https://github.com/downloads/projectgus/hairless-midiserial/hairless-midiserial-0.2-macosx.zip)
 
-* [Hairless MIDI<->Serial Bridge for Windows](https://github.com/downloads/projectgus/hairless-midiserial/hairless-midiserial-0.1-windows.zip)
+* [Hairless MIDI<->Serial Bridge for Windows](https://github.com/downloads/projectgus/hairless-midiserial/hairless-midiserial-0.2-windows.zip)
 
-* [Hairless MIDI<->Serial Bridge for Linux](https://github.com/downloads/projectgus/hairless-midiserial/hairless-midiserial-0.1-linux.tgz)
+* [Hairless MIDI<->Serial Bridge for Linux](https://github.com/downloads/projectgus/hairless-midiserial/hairless-midiserial-0.2-linux.tgz)
 
 
 ## History
+
+* Version 0.2 - 28 September 2011
+
+    Fixed issue where UI could become overloaded if serial device sent excess data.
 
 * Version 0.1 - Initial release, 20 September 2011.
 
