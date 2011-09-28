@@ -33,6 +33,8 @@ private:
     QPixmap pxLedOff;
     QThread *workerThread;
     int scrollbackSize;
+    QTimer debugListTimer;
+    QStringList debugListMessages;
 
     void refresh();
     void refreshSerial();
@@ -45,6 +47,7 @@ private slots:
     void onDisplayMessage(QString message);
     void onDebugMessage(QString message);
     void onDebugClicked(bool value);
+    void refreshDebugList();
     void showPreferences();
     void showAboutBox();
 };

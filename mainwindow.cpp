@@ -5,6 +5,8 @@
 #include "src/settingsdialog.h"
 #include "src/aboutdialog.h"
 
+const int LIST_REFRESH_RATE =20; // Hz
+
 static void selectIfAvailable(QComboBox *box, QString itemText)
 {
     for(int i = 0; i < box->count(); i++) {
@@ -19,7 +21,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     bridge(NULL),
-    workerThread(NULL)
+    workerThread(NULL),
+    debugListTimer(),
+    debugListMessages()
 {
     ui->setupUi(this);
     // Fixed width, minimum height
@@ -44,12 +48,18 @@ MainWindow::MainWindow(QWidget *parent) :
     selectIfAvailable(ui->cmbMidiOut, Settings::getLastMidiOut());
     selectIfAvailable(ui->cmbSerial, Settings::getLastSerialPort());
 
+    // Set up timer for the display list
+    debugListTimer.setSingleShot(true);
+    debugListTimer.setInterval(1000 / LIST_REFRESH_RATE);
+
     // Plumb signals & slots
     connect(ui->cmbMidiIn, SIGNAL(currentIndexChanged(int)), SLOT(onValueChanged()));
     connect(ui->cmbMidiOut, SIGNAL(currentIndexChanged(int)), SLOT(onValueChanged()));
     connect(ui->cmbSerial, SIGNAL(currentIndexChanged(int)), SLOT(onValueChanged()));
     connect(ui->chk_on, SIGNAL(clicked()), SLOT(onValueChanged()));
     connect(ui->chk_debug, SIGNAL(clicked(bool)), SLOT(onDebugClicked(bool)));
+    connect(&debugListTimer, SIGNAL(timeout()), SLOT(refreshDebugList()));
+
 
     // Menu items
     connect(ui->actionExit, SIGNAL(triggered()), qApp, SLOT(quit()));
@@ -210,18 +220,35 @@ void MainWindow::onValueChanged()
 
 void MainWindow::onDisplayMessage(QString message)
 {
-    QListWidget *lst = ui->lst_debug;
-    if(lst->count() > scrollbackSize) {
-        lst->takeItem(0);
-    }
-    lst->addItem(message);
-    lst->scrollToBottom();
+    if(debugListMessages.size() == scrollbackSize)
+        debugListMessages.removeFirst();
+    debugListMessages.append(message);
+    if(!debugListTimer.isActive())
+        debugListTimer.start();
 }
 
 void MainWindow::onDebugMessage(QString message)
 {
     if(ui->chk_debug->isChecked())
         onDisplayMessage(message);
+}
+
+/*
+ * When the timer (started in onDisplayMessage) fires, we update lst_debug with the
+ * contents of debugListMessages.
+ *
+ * This happens in the timer event in order to rate limit it to a number of redraws per second
+ * (redrawing, and especially scrolling the list view, can be quite resource intensive.)
+ */
+void MainWindow::refreshDebugList()
+{
+    QListWidget *lst = ui->lst_debug;
+    while(lst->count() + debugListMessages.size() - scrollbackSize > 0 && lst->count() > 0) {
+      delete lst->item(0);
+    }
+    lst->addItems(debugListMessages);
+    debugListMessages.clear();
+    lst->scrollToBottom();
 }
 
 void MainWindow::resizeEvent(QResizeEvent *)
