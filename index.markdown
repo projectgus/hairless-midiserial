@@ -9,7 +9,7 @@ Hairless MIDI<->Serial Bridge is a free software tool that makes it easy to conn
 
 <p class="centered"><img src="images/diagram.png" alt="Device to Bridge to MIDI Goodness" /></p>
 
-<p class="centered"><a href="#system_requirements">System Requirements</a>  <a href="#downloads">Download</a>  <a href="#getting_started">Getting Started</a>  <a href="#FAQ">FAQ</a></p>
+<p class="centered"><a href="#system_requirements">System Requirements</a>  <a href="#downloads">Download</a>  <a href="#getting_started">Getting Started</a>  <a href="#FAQ">FAQ &amp; Troubleshooting</a></p>
 
 <img src="images/windows.png" alt="Screenshot on Windows" />
 
@@ -127,6 +127,32 @@ unchecking the "Serial<->MIDI Bridge" checkbox in the interface.
 
 * Try using a Serial Terminal program like minicom or Hyperterminal
   and see if any data is received from there.
+
+
+### My MIDI program (Ableton, Logic) doesn't show up in the dropdown
+
+##### ... On OS X
+
+You may need to enable the "IAC" virtual MIDI port. This makes a
+"channel" that can join the two together:
+* Open the OS X built-in "Audio MIDI Setup" application (under Applications->Utilities.)
+* Choose "Show MIDI Window" from the Window menu.
+* Double-click the "IAC Driver" in the MIDI window.
+* Check the "Device is online" box in the dialog that appears.
+* Go back to Hairless MIDI<->Serial and there should be a new "IAC Bus" option in the dropdown. The other MIDI program should also see the IAC bus option.
+
+##### ... On Windows
+
+You need to create a MIDI Yoke virtual port (there's a link under <a
+href="#system_requirements">System Requirements</a>) to create a
+"channel" that joins the two together. There is an explanation on the
+MIDI Yoke page.
+
+##### ... On Linux
+
+You may need to use the "Passthrough" port in Linux ALSA to join them
+together, or use the "Create Virtual MIDI channel" feature if it
+exists in your other program.
 
 
 ### What similar software is available?
