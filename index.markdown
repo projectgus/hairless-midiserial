@@ -31,7 +31,7 @@ Hairless MIDI<->Serial Bridge is a free software tool that makes it easy to conn
 
     If you're a command line user in Linux, you may want to try the very nice [ttymidi](http://www.varal.org/ttymidi/) command line bridge program instead.
 
-* **Windows** XP or later, 32- or 64-bit. 
+* **Windows** XP or later, 32- or 64-bit.
 
     NB: To convey Windows MIDI data from one bit of software to another, you'll need a Virtual MIDI passthrough driver. We recommend [MIDI Yoke](http://www.midiox.com/myoke.htm).
 
@@ -50,6 +50,14 @@ Hairless MIDI<->Serial Bridge is a free software tool that makes it easy to conn
 
 * [Hairless MIDI<->Serial Bridge for Linux](https://github.com/downloads/projectgus/hairless-midiserial/hairless-midiserial-0.2-linux.tgz)
 
+
+## Demo
+
+I never got around to making a demo video, but Greg was kind enough to let me link [his Arduino tone synth](http://arduino.cc/forum/index.php?topic=79326.0) video here:
+
+<iframe width="420" height="315" src="http://www.youtube.com/embed/4fUH5rKpH78" frameborder="0">
+
+</iframe>
 
 ## History
 
@@ -97,6 +105,7 @@ serial messages come through.
 
 10. To disable the bridge, uncheck the "Serial<->MIDI Bridge" checkbox
 at the top of the window.
+
 
 
 ## FAQ
@@ -206,15 +215,17 @@ also as described in these places.
 
 This page and the Hairless MIDI<->Serial Bridge are Copyright (c) 2011 Angus Gratton.
 
+<!-- Piwik -->
 <script type="text/javascript">
-
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-12437898-2']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://spork.chainxor.org/piwik/" : "http://spork.chainxor.org/piwik/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
 </script>
+<script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 2);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script>
+<noscript><p><img src="http://spork.chainxor.org/piwik/piwik.php?idsite=2" style="border:0" alt="" /></p></noscript>
+<!-- End Piwik Tracking Code -->
