@@ -19,7 +19,11 @@
 #ifndef ardumidi_h
 #define ardumidi_h
 
-#include "WProgram.h"
+#if (ARDUINO >= 100)
+ #include <Arduino.h>
+#else
+ #include "WProgram.h"
+#endif
 
 // MIDI notes
 #define MIDI_C0            0
