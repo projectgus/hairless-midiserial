@@ -88,7 +88,7 @@ HEADERS +=    src/RtMidi.h \
 SOURCES +=    src/RtMidi.cpp \
               src/QRtMidiIn.cpp
 
-linux-g++ { # linux doesn't get picked up, not sure what else to use
+linux-* { # linux doesn't get picked up, not sure what else to use
   DEFINES += __LINUX_ALSASEQ__
   CONFIG += link_pkgconfig x11
   PKGCONFIG += alsa
@@ -111,7 +111,7 @@ macx {
 # PortLatency
 SOURCES += src/PortLatency.cpp
 HEADERS += src/PortLatency.h
-linux-g++ {
+linux-* {
    SOURCES += src/PortLatency_linux.cpp
 }
 win32 {
