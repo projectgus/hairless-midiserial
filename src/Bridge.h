@@ -46,15 +46,19 @@ private slots:
     void onMidiIn(double timeStamp, QByteArray message);
     void onSerialAvailable();
 private:
-    int tryMatchSerial(QByteArray &buf);
-    int scanSerialNoise(QByteArray &buf);
-    int scanSerialDebugMessage(QByteArray &buf);
-    int scanSerialMidiMessage(QByteArray &buf);
+    void sendMidiMessage();
+
+    void onDataByte(uint8_t byte);
+    void onStatusByte(uint8_t byte);
 
     QString applyTimeStamp(QString message);
-    QString describeMIDI(QByteArray &buf, int *msg_len_out);
+    QString describeMIDI(QByteArray &buf);
 
-    QByteArray serialBuf;
+    bool bufferStartsWith(uint8_t byte) { return this->msg_data.length() && (uint8_t)msg_data[0] == byte; }
+
+    int running_status;       // if we have a running or current status byte, what is it?
+    int data_expected;        // how many bytes of data are we currently waiting on?
+    QByteArray msg_data;      // accumulated message data from the serial port
     QRtMidiIn *midiIn;
     RtMidiOut *midiOut;
     int midiInPort;
@@ -62,6 +66,8 @@ private:
     QextSerialPort *serial;
     PortLatency *latency;
     QTime attachTime;
+
+
 };
 
 #endif // BRIDGE_H

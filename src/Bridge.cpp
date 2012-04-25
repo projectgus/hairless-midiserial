@@ -7,10 +7,9 @@
 #include "PortLatency.h"
 
 // MIDI message masks
-const uint8_t MSG_MASK = 0x80;
+const uint8_t STATUS_MASK = 0x80;
 const uint8_t CHANNEL_MASK = 0x0F;
 const uint8_t  TAG_MASK = 0xF0;
-
 
 const uint8_t TAG_NOTE_OFF = 0x80;
 const uint8_t TAG_NOTE_ON = 0x90;
@@ -21,12 +20,56 @@ const uint8_t TAG_CHANNEL_PRESSURE = 0xD0;
 const uint8_t TAG_PITCH_BEND = 0xE0;
 const uint8_t TAG_SPECIAL = 0xF0;
 
+const uint8_t MSG_SYSEX_START = 0xF0;
+const uint8_t MSG_SYSEX_END = 0xF7;
+
 const uint8_t MSG_DEBUG = 0xFF; // special ttymidi "debug output" MIDI message tag
+
+inline bool is_voice_msg(uint8_t tag) { return tag >= 0x80 && tag <= 0xEF; };
+inline bool is_syscommon_msg(uint8_t tag) { return tag >= 0xF0 && tag <= 0xF7; };
+inline bool is_realtime_msg(uint8_t tag) { return tag >= 0xF8 && tag < 0xFF; };
+
+
+// return the number of data bytes for a given message status byte
+#define UNKNOWN_MIDI -2
+static int get_data_length(int status) {
+    uint8_t channel;
+    switch(status & TAG_MASK) {
+    case TAG_PROGRAM:
+    case TAG_CHANNEL_PRESSURE:
+      return 1;
+    case TAG_NOTE_ON:
+    case TAG_NOTE_OFF:
+    case TAG_KEY_PRESSURE:
+    case TAG_CONTROLLER:
+    case TAG_PITCH_BEND:
+      return 2;
+    case TAG_SPECIAL:
+      if(status == MSG_DEBUG) {
+        return 3; // Debug messages go { 0xFF, 0, 0, <len>, Msg } so first we read 3 data bytes to get full length
+      }
+      if(status == MSG_SYSEX_START) {
+        return 65535; // SysEx messages go until we see a SysExEnd
+      }
+      channel = status & CHANNEL_MASK;
+      if(channel < 3) {
+        return 2;
+      } else if (channel < 6) {
+        return 1;
+      }
+      return 0;
+    default:
+      // Unknown midi message...?
+      return UNKNOWN_MIDI;
+    }
+}
 
 
 Bridge::Bridge() :
-        QObject(),
-        serialBuf(),
+        QObject(),      
+        running_status(0),
+        data_expected(0),
+        msg_data(),
         midiIn(NULL),
         midiOut(NULL),
         serial(NULL),
@@ -100,7 +143,7 @@ Bridge::~Bridge()
 
 void Bridge::onMidiIn(double timeStamp, QByteArray message)
 {
-    QString description = describeMIDI(message, 0);
+    QString description = describeMIDI(message);
     emit debugMessage(applyTimeStamp(QString("MIDI In: %1").arg(description)));
     emit midiReceived();
     while(message.length() < 3) {
@@ -115,185 +158,150 @@ void Bridge::onMidiIn(double timeStamp, QByteArray message)
 void Bridge::onSerialAvailable()
 {
     emit serialTraffic();
-    QByteArray newData = this->serial->readAll();
-
-    serialBuf.append(newData);
-    while(int n = tryMatchSerial(serialBuf))
-    {
-        if(n == 0)
-            return;
-        else
-            serialBuf = serialBuf.mid(n);
+    QByteArray data = this->serial->readAll();
+    foreach(uint8_t next, data) {
+      if (next & STATUS_MASK)
+        this->onStatusByte(next);
+      else
+        this->onDataByte(next);
+      if(this->data_expected == 0)
+        sendMidiMessage();
     }
 }
 
-/*
- * Look for any MIDI message we recognise in the serial buffer.
- *
- * Return the number of bytes to consume from the buffer.
- */
-int Bridge::tryMatchSerial(QByteArray &buf)
-{
-    int n;
-    while(buf.length() && (uint8_t)buf[0] == 0) {
-        buf.remove(0, 1);
-    }
-    if (buf.length() == 0)
-        return 0;
-    (n = scanSerialNoise(buf) )
-        || ( n = scanSerialDebugMessage(buf) )
-        || ( n = scanSerialMidiMessage(buf) );
-    return n;
+void Bridge::onStatusByte(uint8_t byte) {
+  if(byte == MSG_SYSEX_END && bufferStartsWith(MSG_SYSEX_START)) {
+    this->msg_data.append(byte); // bookends of a complete SysEx message
+    sendMidiMessage();
+    return;
+  }
+
+  if(this->data_expected > 0) {
+    emit displayMessage(applyTimeStamp(QString("Warning: got a status byte when we were expecting %1 more data bytes, sending possibly incomplete MIDI message 0x%2").arg(this->data_expected).arg((uint8_t)this->msg_data[0], 0, 16)));
+    sendMidiMessage();
+  }
+
+  if(is_voice_msg(byte))
+    this->running_status = byte;
+  if(is_syscommon_msg(byte))
+    this->running_status = 0;
+
+  this->data_expected = get_data_length(byte);
+  if(this->data_expected == UNKNOWN_MIDI) {
+      emit displayMessage(applyTimeStamp(QString("Warning: got unexpected status byte %1").arg((uint8_t)byte,0,16)));
+      this->data_expected = 0;
+  }
+  this->msg_data.clear();
+  this->msg_data.append(byte);
 }
 
-/*
- * Look for any non-MIDI noise data at head of the buffer.
- *
- * Return the number of bytes of noise to consume from the buffer, or 0 for no noise.
- */
-int Bridge::scanSerialNoise(QByteArray &buf)
+void Bridge::onDataByte(uint8_t byte)
 {
-    int n = 0;
-    while( n < buf.size() && ( buf[n] & MSG_MASK) == 0 ) { n++; }  // Trim any non-MIDI message flags
-    if(n) {
-        emit displayMessage(applyTimeStamp(QString("Error: got nonsense MIDI data: %1").arg(QString(buf.left(n).toHex()))));
-    }
+  if(this->data_expected == 0 && this->running_status != 0) {
+    onStatusByte(this->running_status);
+  }
+  if(this->data_expected == 0) { // checking again just in in case running status failed to update us to expect data
+    emit displayMessage(applyTimeStamp(QString("Error: got unexpected data byte 0x%1.").arg((uint8_t)byte,0,16)));
+    return;
+  }
 
-    return n;
+  this->msg_data.append(byte);
+  this->data_expected--;
+
+  if( bufferStartsWith(MSG_DEBUG)
+      && this->data_expected == 0
+      && this->msg_data.length() == 4) { // we've read the length of the debug message
+    this->data_expected += this->msg_data[3]; // add the message length
+  }
 }
 
-/*
- * Look for a ttymidi debug message at the head of the buffer
- *
- * Return the number of bytes to consume from the buffer, or 0 for no debug message.
- */
-int Bridge::scanSerialDebugMessage(QByteArray &buf)
-{
-    uint8_t msg = buf[0];
-    if(msg != MSG_DEBUG) {
-        return 0; // not a debug message
-    }
-    if(buf.length() < 4 || buf.length() < buf[3] + 4) {
-        return 0; // incomplete
-    }
-    if(buf[1] || buf[2]) {
-        emit displayMessage(applyTimeStamp(QString("Error, malformed ttymidi debug message: %1").arg(QString(buf.toHex()))));
-        return buf.length(); // just drop everything, we're obviously not getting what we expected
-    }
-    emit displayMessage(applyTimeStamp(QString("Serial Says: %1").arg(QString::fromAscii(buf.mid(4, buf[3]).data()))));
-    return 4 + buf[3];
-}
-
-/*
- * Look for a ttymidi MIDI message at the head of the buffer
- *
- * Return the number of bytes to consume from the buffer, or 0 for no MIDI message found.
- */
-int Bridge::scanSerialMidiMessage(QByteArray &buf)
-{
-    if((uint8_t)buf[0] == MSG_DEBUG) {
-        return 0; // incomplete debug message
-    }
-    int msg_len = 0;
-    QString description = describeMIDI(buf, &msg_len);
-
-    if(buf.length() < msg_len) { // incomplete message, wait for buffer to fill more
-        return 0;
-    }
-
-    emit debugMessage(applyTimeStamp(QString("Serial In: ").append(description)));
-
-    if(midiOut && msg_len) {
-        std::vector<uint8_t> message = std::vector<uint8_t>(buf.begin(), buf.begin()+msg_len);
+void Bridge::sendMidiMessage() {
+  if(msg_data.length() == 0)
+    return;
+  if(bufferStartsWith(MSG_DEBUG)) {
+      QString debug_msg = QString::fromAscii(msg_data.mid(4, msg_data[3]).data());
+      emit displayMessage(applyTimeStamp(QString("Serial Says: %1").arg(debug_msg)));
+  } else {
+      emit debugMessage(applyTimeStamp(QString("Serial In: %1").arg(describeMIDI(msg_data))));
+      if(midiOut) {
+        std::vector<uint8_t> message = std::vector<uint8_t>(msg_data.begin(), msg_data.end());
         midiOut->sendMessage(&message);
         emit midiSent();
-    }
-    return msg_len;
+      }
+  }
+  msg_data.clear();
+  data_expected = 0;
 }
 
 /*
  * Given a buffer containing what is hopefully a MIDI message,
- * return a string describing the MIDI message and (optionally)
- * also let the caller know how long the MIDI message is
+ * return a string describing the MIDI message.
  */
-QString Bridge::describeMIDI(QByteArray &buf, int *msg_len_out)
+QString Bridge::describeMIDI(QByteArray &buf)
 {
     uint8_t msg = buf[0];
     uint8_t tag = msg & TAG_MASK;
     uint8_t channel = msg & CHANNEL_MASK;
-    int msg_len = 0;
     const char *desc= 0;
-    if(msg_len_out) {
-        *msg_len_out = 0;
-    }
 
     // Work out what we have
 
     switch(tag) {
     case TAG_PROGRAM:
-        desc = "Program change %1";
-        msg_len = 2;
+        desc = "Ch %1: Program change %2";
         break;
     case TAG_CHANNEL_PRESSURE:
-        desc = "Ch %1: Pressure change";
-        msg_len = 2;
+        desc = "Ch %1: Pressure change %2";
         break;
     case TAG_NOTE_ON:
         desc = "Ch %1: Note %2 on  velocity %3";
-        msg_len = 3;
         break;
     case TAG_NOTE_OFF:
         desc = "Ch %1: Note %2 off velocity %3";
-        msg_len = 3;
         break;
     case TAG_KEY_PRESSURE:
         desc = "Ch %1: Note %2 pressure %3";
-        msg_len = 3;
         break;
     case TAG_CONTROLLER:
         desc = "Ch %1: Controller %2 value %3";
-        msg_len = 3;
         break;
     case TAG_PITCH_BEND:
         desc = "Ch %1: Pitch bend %2";
-        msg_len = 3; // pitch bend is special, see below
         break;
     case TAG_SPECIAL:
+        if(msg == MSG_SYSEX_START) {
+            QString res = "SysEx Message: ";
+            for(int i = 1; i < buf.length(); i++) {
+                uint8_t val = buf[i];
+                if(val == MSG_SYSEX_END)
+                    break;
+                res.append(QString("0x%1 ").arg(val,0,16));
+            }
+            return res;
+        }
         if(channel < 3) {
             desc = "System Message #%1: %2 %3";
-            msg_len = 3;
         } else if (channel < 6) {
             desc = "System Message #%1: %2";
-            msg_len = 2;
         } else {
             desc = "System Message #%1";
-            msg_len = 1;
         }
         break;
     default:
         return QString("Unknown MIDI message %1").arg(QString(buf.toHex()));
     }
 
-    if(msg_len_out) {
-        *msg_len_out = msg_len;
-    }
-
-    // Check the length
-
-    if(buf.length() < msg_len) {
-        return QString("Incomplete MIDI message (length %1, needs %2)").arg(buf.length()).arg(msg_len); // incomplete buffer for message type
-    }
-
     // Format the output
 
     QString qdesc = QString(desc).arg((int) channel);
 
-    if(tag == TAG_PITCH_BEND) { // special
-        return qdesc.arg((int) buf[1] | buf[2]<<7 );
+    if(tag == TAG_PITCH_BEND && buf.length() == 3) { // recombine LSB/MSB for pitch bend
+        return qdesc.arg((int) ((uint8_t)buf[1]) | ((uint8_t) buf[2])<<7 );
     }
 
-    for(int i = 1; i < msg_len; i++) {
-            qdesc = qdesc.arg((int) buf[i]);
+    int i = 1;
+    while(qdesc.contains("%") && i < buf.length()) {
+      qdesc = qdesc.arg((int) buf[i++]);
     }
     return qdesc;
 }
