@@ -15,7 +15,7 @@ QRtMidiIn::QRtMidiIn(const std::string clientName) :
 
 void QRtMidiIn::midiCallback(double timeStamp, std::vector<unsigned char> *message)
 {
-    QByteArray messageCopy = QByteArray::fromRawData((const char *)message->data(), message->size());
+    QByteArray messageCopy = QByteArray((const char *)message->data(), message->size());
     emit messageReceived(timeStamp, messageCopy);
 }
 
