@@ -1,7 +1,5 @@
----
-title: The Hairless MIDI<->Serial Bridge
----
-<link href="markdown.css" rel="stylesheet"></link>
+Title: The Hairless MIDI<->Serial Bridge
+CSS: markdown.css
 
 <p class="centered"><img src="images/logo.png" alt="Hairless MIDISerial Bridge Logo" /></p>
 
