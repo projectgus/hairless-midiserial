@@ -9,7 +9,7 @@ Hairless MIDI<->Serial Bridge is the easiest way to connect serial devices (like
 
 <p class="centered"><img src="images/diagram.png" alt="Device to Bridge to MIDI Goodness" /></p>
 
-<p class="centered"><a href="#downloads">Download</a>  <a href="#system_requirements">System Requirements</a>  <a href="#getting_started">Getting Started</a>  <a href="#FAQ">FAQ &amp; Troubleshooting</a></p>
+<p class="centered"><a href="#downloads">Download</a> ⊕ <a href="#system_requirements">System Requirements</a> ⊕ <a href="#getting_started">Getting Started</a> ⊕ <a href="#FAQ">FAQ &amp; Troubleshooting</a></p>
 
 <img src="images/windows.png" alt="Screenshot on Windows" />
 
