@@ -5,11 +5,11 @@ title: The Hairless MIDI<->Serial Bridge
 
 <p class="centered"><img src="images/logo.png" alt="Hairless MIDISerial Bridge Logo" /></p>
 
-Hairless MIDI<->Serial Bridge is a free software tool that makes it easy to connect serial devices (like Arduinos) to send and receive MIDI signals. For Mac OS X, Windows & Linux.
+Hairless MIDI<->Serial Bridge is the easiest way to connect serial devices (like Arduinos) to send and receive MIDI signals. 100% Free Software. For Mac OS X, Windows & Linux.
 
 <p class="centered"><img src="images/diagram.png" alt="Device to Bridge to MIDI Goodness" /></p>
 
-<p class="centered"><a href="#system_requirements">System Requirements</a>  <a href="#downloads">Download</a>  <a href="#getting_started">Getting Started</a>  <a href="#FAQ">FAQ &amp; Troubleshooting</a></p>
+<p class="centered"><a href="#downloads">Download</a>  <a href="#system_requirements">System Requirements</a>  <a href="#getting_started">Getting Started</a>  <a href="#FAQ">FAQ &amp; Troubleshooting</a></p>
 
 <img src="images/windows.png" alt="Screenshot on Windows" />
 
@@ -21,7 +21,19 @@ Hairless MIDI<->Serial Bridge is a free software tool that makes it easy to conn
 
 * Improves FTDI latency on Linux & Windows.  This means better MIDI latency when using FTDI-based devices like the Arduino Duemilanove.
 
-* Fully compatible with the Linux program  [ttymidi](http://www.varal.org/ttymidi/), and their Ardumidi library (included in the download.)
+* Compatible with the  [Arduino MIDI Library](http://arduino.cc/playground/Main/MIDILibrary) ([see tip](#how_do_i_use_the_arduino_midi_library).)
+
+* Compatible with the Linux program  [ttymidi](http://www.varal.org/ttymidi/), and their Ardumidi library (included in the download.)
+
+
+## Downloads
+
+* [Hairless MIDI<->Serial Bridge for Mac OS X](https://github.com/downloads/projectgus/hairless-midiserial/hairless-midiserial-0.3-macosx.zip)
+
+* [Hairless MIDI<->Serial Bridge for Windows](https://github.com/downloads/projectgus/hairless-midiserial/hairless-midiserial-0.3-windows.zip)
+
+* [Hairless MIDI<->Serial Bridge for Linux](https://github.com/downloads/projectgus/hairless-midiserial/hairless-midiserial-0.3-linux.tgz)
+
 
 ## System Requirements
 
@@ -42,15 +54,6 @@ Hairless MIDI<->Serial Bridge is a free software tool that makes it easy to conn
     For help installing MIDI Yoke on Vista or 7, see [here](http://help.touch-able.com/kb/installation/midi-yoke-installation-on-windows-vista-or-windows-7) and [here](http://www.midiox.com/cgi/yabb/YaBB.pl?board=myokent;action=display;num=1299166667).
 
 
-## Downloads
-
-* [Hairless MIDI<->Serial Bridge for Mac OS X](https://github.com/downloads/projectgus/hairless-midiserial/hairless-midiserial-0.2-macosx.zip)
-
-* [Hairless MIDI<->Serial Bridge for Windows](https://github.com/downloads/projectgus/hairless-midiserial/hairless-midiserial-0.2-windows.zip)
-
-* [Hairless MIDI<->Serial Bridge for Linux](https://github.com/downloads/projectgus/hairless-midiserial/hairless-midiserial-0.2-linux.tgz)
-
-
 ## Demo
 
 I never got around to making a demo video, but Greg was kind enough to let me link [his Arduino tone synth](http://arduino.cc/forum/index.php?topic=79326.0) video here:
@@ -60,6 +63,14 @@ I never got around to making a demo video, but Greg was kind enough to let me li
 </iframe>
 
 ## History
+
+* Version 0.3 - 8 May 2012
+
+    Fixed bug with receiving simultaneous MIDI notes.
+
+    Added support for running MIDI status, as used by Arduino MIDI Library.
+
+    Now supports variable-length SysEx ("System Extension") data messages.
 
 * Version 0.2 - 28 September 2011
 
@@ -121,6 +132,21 @@ could submit a github pull request (or a patch) along with the bug
 report. :)
 
 
+### How do I use the Arduino MIDI Library?
+
+The [Arduino MIDI Library](http://arduino.cc/playground/Main/MIDILibrary) is a newer
+MIDI library than Ardumidi, and seems to be the way of the future.
+
+To use this library with Hairless Bridge, you can mostly follow their
+instructions exactly. The only difference is that you need to
+initialise the Serial port after the MIDI library, like this:
+
+    void setup() {
+      MIDI.begin();
+      Serial.begin(115200);
+    }
+
+
 ### I can't reprogram my Arduino any more
 
 You need to disable the Serial<->MIDI Bridge before sending other data
@@ -171,10 +197,33 @@ exists in your other program.
 * [midiserial](http://blipbox.org/blog/projects/midiserial/) another command-line bridge. Only tested on OS X.
 * Some microcontrollers, such as [Arduino Uno](http://code.google.com/p/hiduino/) and [Teensy](http://www.pjrc.com/teensy/td_midi.html) are capable of being proper USB MIDI devices, so you don't need a serial bridge.
 
+
+### Can I use the native MIDI baud rate, 31250bps?
+
+It would be nice to be able to use the hardware MIDI baud rate,
+31250bps. This means the logical signals from Hairless Bridge can be
+used with real MIDI hardware, with just some electronics to adjust the
+serial voltages to become MIDI current loop signals.
+
+Unfortunately, most computer serial ports can't actually talk at
+31250bps. For historical & technical reasons they're usually limited
+to multiples of 300bps.
+
+However, if you're prepared to hack around a bit, the FTDI USB/Serial
+chip (as found on the Arduino Duemilanove) can talk the native MIDI
+rate. Have a read through [these Arduino forum
+posts](http://www.arduino.cc/cgi-bin/yabb2/YaBB.pl?num=1161023163) and
+you can see how to hack the driver on OS X or Windows, so that when
+you choose a different rate (like 38400bps) it is actually 31250,
+behind the scenes.
+
+This is not a supported configuration for Hairless Bridge, but it can
+be made to work in some circumstances.
+
+
 ### Where did the name come from?
 
-Do you see any [hairy
-yaks](http://projects.csail.mit.edu/gsb/old-archive/gsb-archive/gsb2000-02-11.html) around
+Do you see any [hairy yaks](http://projects.csail.mit.edu/gsb/old-archive/gsb-archive/gsb2000-02-11.html) around
 here? No? Hairless it is. :)
 
 That is also where the poor excuse for an icon (supposed to look like clippers) came from. :)
