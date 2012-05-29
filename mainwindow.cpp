@@ -165,19 +165,14 @@ void MainWindow::refreshSerial()
     ui->cmbSerial->addItem(TEXT_NOT_CONNECTED);
     QList<QextPortInfo> ports = QextSerialEnumerator::getPorts();
     for(QList<QextPortInfo>::iterator it = ports.begin(); it != ports.end(); it++) {
-#ifdef Q_OS_MAC
-        QString label = it->portName; // OS X has no friendly name set
-#else
-        QString label = it->friendName;
-#endif
+        QString label = it->friendName.isEmpty() ? it->portName : it->friendName;
 #ifdef Q_OS_LINUX
         QString portName = it->physName; // Bug workaround, Linux needs the /dev/ in front of port name
 #else
         QString portName = it->portName;
 #endif
-
         ui->cmbSerial->addItem(label, QVariant(portName));
-        if(current == it->friendName) {
+        if(current == label) {
             ui->cmbSerial->setCurrentIndex(ui->cmbSerial->count() - 1);
         }
     }
