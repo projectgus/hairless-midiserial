@@ -41,12 +41,12 @@ void midi_controller_change(byte channel, byte control, byte value)
 
 void midi_program_change(byte channel, byte program)
 {
-	midi_command(0xC0, channel, program, 0);
+	midi_command_short(0xC0, channel, program);
 }
 
 void midi_channel_pressure(byte channel, byte value)
 {
-	midi_command(0xD0, channel, value, 0);
+	midi_command_short(0xD0, channel, value);
 }
 
 void midi_pitch_bend(byte channel, int value)
@@ -56,17 +56,23 @@ void midi_pitch_bend(byte channel, int value)
 
 void midi_command(byte command, byte channel, byte param1, byte param2)
 {
-	Serial.write(command | (channel & 0x0F));
-	Serial.write(param1 & 0x7F);
-	Serial.write(param2 & 0x7F);
+	Serial.print(command | (channel & 0x0F), BYTE);
+	Serial.print(param1 & 0x7F, BYTE);
+	Serial.print(param2 & 0x7F, BYTE);
+}
+
+void midi_command_short(byte command, byte channel, byte param1)
+{
+	Serial.print(command | (channel & 0x0F), BYTE);
+	Serial.print(param1 & 0x7F, BYTE);
 }
 
 void midi_print(char* msg, int len)
 {
-	Serial.write(0xFF);
-	Serial.write((uint8_t)0x00);
-	Serial.write((uint8_t)0x00);
-	Serial.write(len);
+	Serial.print(0xFF, BYTE);
+	Serial.print(0x00, BYTE);
+	Serial.print(0x00, BYTE);
+	Serial.print(len , BYTE);
 	Serial.print(msg);
 }
 
@@ -87,6 +93,14 @@ int midi_message_available() {
 	while ((Serial.available() > 0) && ((Serial.peek() & B10000000) != 0x80)) {
 		Serial.read();
 	}
+
+	/* Well we don't exactly know how many commands there might be in the Serial buffer
+           so we'll just guess it according the type of message that happens to be waiting
+           in the buffer. At least we get first one right! */
+	byte command = Serial.peek() & 11110000;
+	if (command != MIDI_PROGRAM_CHANGE && command != MIDI_CHANNEL_PRESSURE) {
+		return (Serial.available()/2);
+	}
 	return (Serial.available()/3);
 }
 
@@ -96,7 +110,9 @@ MidiMessage read_midi_message() {
 	message.command  = (midi_status & B11110000);
 	message.channel  = (midi_status & B00001111);
 	message.param1   = Serial.read();
-	message.param2   = Serial.read();
+	if (message.command != MIDI_PROGRAM_CHANGE && message.command != MIDI_CHANNEL_PRESSURE) {
+		message.param2   = Serial.read();
+	}
 	return message;
 }
 

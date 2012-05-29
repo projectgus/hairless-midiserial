@@ -146,9 +146,6 @@ void Bridge::onMidiIn(double timeStamp, QByteArray message)
     QString description = describeMIDI(message);
     emit debugMessage(applyTimeStamp(QString("MIDI In: %1").arg(description)));
     emit midiReceived();
-    while(message.length() < 3) {
-        message.append((char)0); // pad short MIDI messages, as per ttymidi
-    }
     if(serial && serial->isOpen()) {
         serial->write(message);
         emit serialTraffic();
