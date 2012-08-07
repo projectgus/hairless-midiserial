@@ -2,8 +2,8 @@
 <!DOCTYPE html PUBLIC
     "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN"
     "http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd">
-<html xmlns='http://www.w3.org/1999/xhtml' xmlns:svg='http://www.w3.org/2000/svg' xml:lang='en'>
-<head><meta http-equiv='Content-type' content='application/xhtml+xml;charset=utf-8' /><title>The Hairless MIDI&lt;-&gt;Serial Bridge</title><link type='text/css' href='markdown.css' rel='stylesheet' />
+<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en' xmlns:svg='http://www.w3.org/2000/svg'>
+<head><meta content='application/xhtml+xml;charset=utf-8' http-equiv='Content-type' /><title>The Hairless MIDI&lt;-&gt;Serial Bridge</title><link href='markdown.css' type='text/css' rel='stylesheet' />
 </head>
 <body><p class='centered'><img alt='Hairless MIDISerial Bridge Logo' src='images/logo.png' /></p>
 <p>Hairless MIDI&lt;-&gt;Serial Bridge is the easiest way to connect serial devices (like Arduinos) to send and receive MIDI signals. 100% Free Software. For Mac OS X, Windows &amp; Linux.</p>
@@ -36,15 +36,15 @@
 
 <ul>
 <li>
-<p><a href='https://github.com/downloads/projectgus/hairless-midiserial/hairless-midiserial-0.3-macosx.zip'>Hairless MIDI&lt;-&gt;Serial Bridge for Mac OS X</a></p>
+<p><a href='https://github.com/downloads/projectgus/hairless-midiserial/hairless-midiserial-0.4-macosx.zip'>Hairless MIDI&lt;-&gt;Serial Bridge for Mac OS X</a></p>
 </li>
 
 <li>
-<p><a href='https://github.com/downloads/projectgus/hairless-midiserial/hairless-midiserial-0.3-windows.zip'>Hairless MIDI&lt;-&gt;Serial Bridge for Windows</a></p>
+<p><a href='https://github.com/downloads/projectgus/hairless-midiserial/hairless-midiserial-0.4-windows.zip'>Hairless MIDI&lt;-&gt;Serial Bridge for Windows</a></p>
 </li>
 
 <li>
-<p><a href='https://github.com/downloads/projectgus/hairless-midiserial/hairless-midiserial-0.3-linux.tgz'>Hairless MIDI&lt;-&gt;Serial Bridge for Linux</a></p>
+<p><a href='https://github.com/downloads/projectgus/hairless-midiserial/hairless-midiserial-0.4-linux.tgz'>Hairless MIDI&lt;-&gt;Serial Bridge for Linux</a></p>
 </li>
 </ul>
 
@@ -79,12 +79,24 @@
 <h2 id='demo'>Demo</h2>
 
 <p>I never got around to making a demo video, but Greg was kind enough to let me link <a href='http://arduino.cc/forum/index.php?topic=79326.0'>his Arduino tone synth</a> video here:</p>
-<iframe width='420' src='http://www.youtube.com/embed/4fUH5rKpH78' frameborder='0' height='315'>
+<iframe src='http://www.youtube.com/embed/4fUH5rKpH78' frameborder='0' height='315' width='420'>
 
 </iframe>
 <h2 id='history'>History</h2>
 
 <ul>
+<li>
+<p>Version 0.4 - 7 August 20102</p>
+
+<p>When using &#8216;Debug MIDI Messages&#8217;, channel numbers now range 1-16 not 0-15, as per MIDI standard.</p>
+
+<p>Add two-way (output to serial port) support for SysEx, time &amp; sense messages.</p>
+
+<p>Added latest &amp; final version of Ardumidi library (Ardumidi is now longer being developed, another option is the <a href='http://arduino.cc/playground/Main/MIDILibrary'>Arduino MIDI Library</a>.)</p>
+
+<p>(Linux) fixed a bug where &#8216;ACM&#8217; type USB serial devices (like Arduino UNO) weren&#8217;t recognised.</p>
+</li>
+
 <li>
 <p>Version 0.3 - 8 May 2012</p>
 

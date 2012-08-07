@@ -26,11 +26,11 @@ Hairless MIDI<->Serial Bridge is the easiest way to connect serial devices (like
 
 ## Downloads
 
-* [Hairless MIDI<->Serial Bridge for Mac OS X](https://github.com/downloads/projectgus/hairless-midiserial/hairless-midiserial-0.3-macosx.zip)
+* [Hairless MIDI<->Serial Bridge for Mac OS X](https://github.com/downloads/projectgus/hairless-midiserial/hairless-midiserial-0.4-macosx.zip)
 
-* [Hairless MIDI<->Serial Bridge for Windows](https://github.com/downloads/projectgus/hairless-midiserial/hairless-midiserial-0.3-windows.zip)
+* [Hairless MIDI<->Serial Bridge for Windows](https://github.com/downloads/projectgus/hairless-midiserial/hairless-midiserial-0.4-windows.zip)
 
-* [Hairless MIDI<->Serial Bridge for Linux](https://github.com/downloads/projectgus/hairless-midiserial/hairless-midiserial-0.3-linux.tgz)
+* [Hairless MIDI<->Serial Bridge for Linux](https://github.com/downloads/projectgus/hairless-midiserial/hairless-midiserial-0.4-linux.tgz)
 
 
 ## System Requirements
@@ -61,6 +61,18 @@ I never got around to making a demo video, but Greg was kind enough to let me li
 </iframe>
 
 ## History
+
+
+* Version 0.4 - 7 August 20102
+
+    When using 'Debug MIDI Messages', channel numbers now range 1-16 not 0-15, as per MIDI standard.
+
+    Add two-way (output to serial port) support for SysEx, time & sense messages.
+
+    Added latest & final version of Ardumidi library (Ardumidi is now longer being developed, another
+    option is the [Arduino MIDI Library](http://arduino.cc/playground/Main/MIDILibrary).)
+
+    (Linux) fixed a bug where 'ACM' type USB serial devices (like Arduino UNO) weren't recognised.
 
 * Version 0.3 - 8 May 2012
 
