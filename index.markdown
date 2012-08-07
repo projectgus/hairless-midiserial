@@ -76,6 +76,8 @@ I never got around to making a demo video, but Greg was kind enough to let me li
 
 * Version 0.3 - 8 May 2012
 
+	 Ardumidi updated to work with Arduino 1.0 (thanks to Jorge Falcão.)
+
     Fixed bug with receiving simultaneous MIDI notes.
 
     Added support for running MIDI status, as used by Arduino MIDI Library.
