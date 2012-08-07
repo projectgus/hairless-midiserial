@@ -290,7 +290,7 @@ QString Bridge::describeMIDI(QByteArray &buf)
 
     // Format the output
 
-    QString qdesc = QString(desc).arg((int) channel);
+    QString qdesc = QString(desc).arg((int) channel+(tag==TAG_SPECIAL?0:1));
 
     if(tag == TAG_PITCH_BEND && buf.length() == 3) { // recombine LSB/MSB for pitch bend
         return qdesc.arg((int) ((uint8_t)buf[1]) | ((uint8_t) buf[2])<<7 );
