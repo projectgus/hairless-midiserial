@@ -278,7 +278,7 @@ This page and the Hairless MIDI<->Serial Bridge are Copyright (c) 2011 Angus Gra
 
 <!-- Piwik -->
 <script type="text/javascript">
-var pkBaseURL = (("https:" == document.location.protocol) ? "https://spork.chainxor.org/piwik/" : "http://spork.chainxor.org/piwik/");
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://stats.projectgus.com/" : "http://stats.projectgus.com/");
 document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
 </script>
 <script type="text/javascript">
@@ -288,5 +288,5 @@ piwikTracker.trackPageView();
 piwikTracker.enableLinkTracking();
 } catch( err ) {}
 </script>
-<noscript><p><img src="http://spork.chainxor.org/piwik/piwik.php?idsite=2" style="border:0" alt="" /></p></noscript>
+<noscript><p><img src="http://stats.projectgus.com/piwik.php?idsite=2" style="border:0" alt="" /></p></noscript>
 <!-- End Piwik Tracking Code -->
