@@ -64,15 +64,13 @@
 <li>
 <p><strong>Windows</strong> XP or later, 32- or 64-bit.</p>
 
-<p>NB: To convey Windows MIDI data from one bit of software to another, you&#8217;ll need a Virtual MIDI passthrough driver. We recommend <a href='http://www.midiox.com/myoke.htm'>MIDI Yoke</a>.</p>
+<p>NB: To convey Windows MIDI data from one bit of software to another, you&#8217;ll need a Virtual MIDI passthrough driver. We recommend <a href='http://www.tobias-erichsen.de/software/loopmidi.html'>loopMIDI</a>, or there is alternatively the older <a href='http://www.midiox.com/myoke.htm'>MIDI Yoke</a> (MIDI Yoke is not recomended for Vista or newer.)</p>
 </li>
 
 <li>
-<p><strong>Windows Vista</strong> or <strong>Windows 7</strong> special notes:</p>
+<p><strong>Windows Vista, 7 &amp; 8</strong> special notes:</p>
 
 <p>To use Hairless MIDI&lt;-&gt;Serial Bridge&#8217;s automatic FTDI latency reduction feature, you may need to &#8220;Run As Administrator&#8221; when you launch the program.</p>
-
-<p>For help installing MIDI Yoke on Vista or 7, see <a href='http://help.touch-able.com/kb/installation/midi-yoke-installation-on-windows-vista-or-windows-7'>here</a> and <a href='http://www.midiox.com/cgi/yabb/YaBB.pl?board=myokent;action=display;num=1299166667'>here</a>.</p>
 </li>
 </ul>
 
@@ -152,7 +150,7 @@
 </li>
 
 <li>
-<p>Select your app&#8217;s MIDI port from the MIDI dropdown (on Windows, set both sides to connect to the same MIDI Yoke virtual MIDI port.)</p>
+<p>Select your app&#8217;s MIDI port from the MIDI dropdown (on Windows, set both sides to connect to the same loopMIDI virtual MIDI port.)</p>
 <img alt='Up and running in OS X' src='images/osx3.png' /></li>
 
 <li>
@@ -221,7 +219,9 @@
 
 <h5 id='_on_windows'>&#8230; On Windows</h5>
 
-<p>You need to create a MIDI Yoke virtual port (there&#8217;s a link under <a href='#system_requirements'>System Requirements</a>) to create a &#8220;channel&#8221; that joins the two together. There is an explanation on the MIDI Yoke page.</p>
+<p>You need to create a loopMIDI virtual port (there&#8217;s a link under <a href='#system_requirements'>System Requirements</a>) to create a &#8220;channel&#8221; that joins the two together.</p>
+
+<p>After intalling loopMIDI, launch it and click the &#8221;+&#8221; button to create a new virtual MIDI port with the specified name. Both Hairless Bridge and your MIDI program should then connect to this port.</p>
 
 <h5 id='_on_linux'>&#8230; On Linux</h5>
 

@@ -43,13 +43,12 @@ Hairless MIDI<->Serial Bridge is the easiest way to connect serial devices (like
 
 * **Windows** XP or later, 32- or 64-bit.
 
-    NB: To convey Windows MIDI data from one bit of software to another, you'll need a Virtual MIDI passthrough driver. We recommend [MIDI Yoke](http://www.midiox.com/myoke.htm).
+    NB: To convey Windows MIDI data from one bit of software to another, you'll need a Virtual MIDI passthrough driver. We recommend [loopMIDI](http://www.tobias-erichsen.de/software/loopmidi.html), or there is alternatively the older [MIDI Yoke](http://www.midiox.com/myoke.htm) (MIDI Yoke is not recomended for Vista or newer.)
 
-* **Windows Vista** or **Windows 7** special notes:
+* **Windows Vista, 7 & 8** special notes:
 
     To use Hairless MIDI<->Serial Bridge's automatic FTDI latency reduction feature, you may need to "Run As Administrator" when you launch the program.
 
-    For help installing MIDI Yoke on Vista or 7, see [here](http://help.touch-able.com/kb/installation/midi-yoke-installation-on-windows-vista-or-windows-7) and [here](http://www.midiox.com/cgi/yabb/YaBB.pl?board=myokent;action=display;num=1299166667).
 
 
 ## Demo
@@ -116,7 +115,7 @@ look correct (defaults are 115200bps, no flow control.)
 7. Set your music app to send or receive MIDI data, if it's not enabled already.
 
 8. Select your app's MIDI port from the MIDI dropdown (on Windows, set both sides to
-connect to the same MIDI Yoke virtual MIDI port.)
+connect to the same loopMIDI virtual MIDI port.)
 
     <img src="images/osx3.png" alt="Up and running in OS X" />
 
@@ -190,10 +189,11 @@ You may need to enable the "IAC" virtual MIDI port. This makes a
 
 ##### ... On Windows
 
-You need to create a MIDI Yoke virtual port (there's a link under <a
+You need to create a loopMIDI virtual port (there's a link under <a
 href="#system_requirements">System Requirements</a>) to create a
-"channel" that joins the two together. There is an explanation on the
-MIDI Yoke page.
+"channel" that joins the two together.
+
+After intalling loopMIDI, launch it and click the "+" button to create a new virtual MIDI port with the specified name. Both Hairless Bridge and your MIDI program should then connect to this port.
 
 ##### ... On Linux
 
