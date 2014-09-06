@@ -17,6 +17,7 @@ class QRtMidiIn : public QObject, public RtMidiIn {
 public:
     QRtMidiIn(const std::string clientName = std::string( "QRtMidi Input Client") );
     void midiCallback(double timeStamp, std::vector<unsigned char> *message);
+    virtual ~QRtMidiIn ( void ) throw() { }
 signals:
     void messageReceived(double timeStamp, QByteArray message);
 };

@@ -81,12 +81,13 @@ win32 {
 
 # RtMidi
 
-HEADERS +=    src/RtMidi.h \
-              src/RtError.h \
+HEADERS +=    rtmidi/RtMidi.h \
               src/QRtMidiIn.h \
 
-SOURCES +=    src/RtMidi.cpp \
+SOURCES +=    rtmidi/RtMidi.cpp \
               src/QRtMidiIn.cpp
+
+INCLUDEPATH += rtmidi/
 
 linux-* { # linux doesn't get picked up, not sure what else to use
   DEFINES += __LINUX_ALSASEQ__

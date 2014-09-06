@@ -8,7 +8,7 @@ static void midiCallbackOuter(double timeStamp, std::vector<unsigned char> *mess
 
 QRtMidiIn::QRtMidiIn(const std::string clientName) :
             QObject(0),
-            RtMidiIn(clientName)
+            RtMidiIn(RtMidi::UNSPECIFIED, clientName)
 {
     this->ignoreTypes(false,false,false); // we want MIDI SysEx, time & sense messages
     this->setCallback(midiCallbackOuter, this);

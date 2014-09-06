@@ -151,7 +151,7 @@ void MainWindow::refreshMidi(QComboBox *combo, RtMidi *midi)
            }
         }
     }
-    catch (RtError err) {
+    catch (RtMidiError err) {
         ui->lst_debug->addItem("Failed to scan for MIDI ports:");
         ui->lst_debug->addItem(QString::fromStdString(err.getMessage()));
         ui->lst_debug->scrollToBottom();

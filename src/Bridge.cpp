@@ -103,11 +103,11 @@ void Bridge::attach(QString serialName, PortSettings serialSettings, int midiInP
         {
             emit displayMessage(QString("Opening MIDI Out port #%1").arg(midiOutPort));
             this->midiOutPort = midiOutPort;
-            this->midiOut = new RtMidiOut(NAME_MIDI_OUT);
+            this->midiOut = new RtMidiOut(RtMidi::UNSPECIFIED, NAME_MIDI_OUT);
             this->midiOut->openPort(midiOutPort);
         }
     }
-    catch(RtError e)
+    catch(RtMidiError e)
     {
         displayMessage(QString("Failed to open MIDI out port: %1").arg(QString::fromStdString(e.getMessage())));
     }
@@ -124,7 +124,7 @@ void Bridge::attach(QString serialName, PortSettings serialSettings, int midiInP
             connect(this->midiIn, SIGNAL(messageReceived(double,QByteArray)), this, SLOT(onMidiIn(double,QByteArray)));
         }
      }
-    catch(RtError e)
+    catch(RtMidiError e)
     {
         displayMessage(QString("Failed to open MIDI in port: %1").arg(QString::fromStdString(e.getMessage())));
     }
