@@ -7,7 +7,7 @@
 #include <QTime>
 #include <QMenuBar>
 #include <QTimer>
-#include "rtmidi/RtMidi.h"
+#include "RtMidi.h"
 #include "Bridge.h"
 
 namespace Ui {

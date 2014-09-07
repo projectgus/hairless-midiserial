@@ -73,7 +73,9 @@ static void populateParity(QComboBox *box, ParityType initialValue)
 static void populateStopBits(QComboBox *box, StopBitsType initialValue)
 {
   box->addItem("1", STOP_1);
+#ifdef Q_OS_WIN32
   box->addItem("1 1/2", STOP_1_5);
+#endif
   box->addItem("2", STOP_2);
   selectByData(box, initialValue);
 }

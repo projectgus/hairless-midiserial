@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "qextserialport/qextserialenumerator.h"
+#include "qextserialenumerator.h"
 #include "Settings.h"
 #include "settingsdialog.h"
 #include "aboutdialog.h"

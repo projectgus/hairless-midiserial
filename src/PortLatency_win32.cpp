@@ -4,7 +4,7 @@
  */
 
 #include "PortLatency.h"
-#include "qextserialport/qextserialenumerator.h"
+#include "qextserialenumerator.h"
 extern "C" {
 #include <windows.h>
 }

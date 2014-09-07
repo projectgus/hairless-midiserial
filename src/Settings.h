@@ -2,7 +2,7 @@
 #define SETTINGS_H
 
 #include <QSettings>
-#include "qextserialport/qextserialport.h"
+#include "qextserialport.h"
 
 // Note that main.cpp sets QCoreApplication::applicationName and such, allowing us to use a
 // plain QSettings() constructor

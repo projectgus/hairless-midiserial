@@ -14,7 +14,7 @@
 #include <QThread>
 #include "RtMidi.h"
 #include "QRtMidiIn.h"
-#include "qextserialport/qextserialport.h"
+#include "qextserialport.h"
 #include "PortLatency.h"
 
 const QString TEXT_NOT_CONNECTED = "(Not Connected)";

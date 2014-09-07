@@ -62,34 +62,39 @@ macx {
 
 # qextserialport
 
-HEADERS                 += qextserialport/qextserialport.h \
-                          qextserialport/qextserialenumerator.h \
-                          qextserialport/qextserialport_global.h
-SOURCES                 += qextserialport/qextserialport.cpp
+HEADERS                 += libraries/qextserialport/src/qextserialport.h \
+                          libraries/qextserialport/src/qextserialenumerator.h \
+                          libraries/qextserialport/src/qextserialport_global.h
+SOURCES                 += libraries/qextserialport/src/qextserialport.cpp \
+                           libraries/qextserialport/src/qextserialenumerator.cpp
 
-unix:SOURCES           += qextserialport/posix_qextserialport.cpp
-unix:!macx:SOURCES     += qextserialport/qextserialenumerator_unix.cpp
+unix:SOURCES           += libraries/qextserialport/src/qextserialport_unix.cpp
+unix:!macx:SOURCES     += libraries/qextserialport/src/qextserialenumerator_linux.cpp
+unix:!macx:LIBS        += -ludev
+
 macx {
-  SOURCES          += qextserialport/qextserialenumerator_osx.cpp
+  SOURCES          += libraries/qextserialport/src/qextserialenumerator_osx.cpp
   LIBS             += -framework IOKit -framework CoreFoundation
 }
 
 win32 {
-  SOURCES          += qextserialport/win_qextserialport.cpp \
-                      qextserialport/qextserialenumerator_win.cpp
+  SOURCES          += libraries/qextserialport/src/win_qextserialport.cpp \
+                      libraries/qextserialport/src/qextserialenumerator_win.cpp
   DEFINES          += WINVER=0x0501 # needed for mingw to pull in appropriate dbt business...probably a better way to do this
   LIBS             += -lsetupapi
 }
 
+INCLUDEPATH += libraries/qextserialport/src/
+
 # RtMidi
 
-HEADERS +=    rtmidi/RtMidi.h \
+HEADERS +=    libraries/rtmidi/RtMidi.h \
               src/QRtMidiIn.h \
 
-SOURCES +=    rtmidi/RtMidi.cpp \
+SOURCES +=    libraries/rtmidi/RtMidi.cpp \
               src/QRtMidiIn.cpp
 
-INCLUDEPATH += rtmidi/
+INCLUDEPATH += libraries/rtmidi/
 
 linux-* { # linux doesn't get picked up, not sure what else to use
   DEFINES += __LINUX_ALSASEQ__

@@ -1,5 +1,5 @@
 #include "Bridge.h"
-#include "qextserialport/qextserialenumerator.h"
+#include "qextserialenumerator.h"
 #include <QList>
 #include <QVector>
 #include <QIODevice>
