@@ -8,7 +8,7 @@
 #include <QMenuBar>
 #include <QTimer>
 #include "rtmidi/RtMidi.h"
-#include "src/Bridge.h"
+#include "Bridge.h"
 
 namespace Ui {
     class MainWindow;

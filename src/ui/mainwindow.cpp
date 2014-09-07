@@ -1,9 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "qextserialport/qextserialenumerator.h"
-#include "src/Settings.h"
-#include "src/settingsdialog.h"
-#include "src/aboutdialog.h"
+#include "Settings.h"
+#include "settingsdialog.h"
+#include "aboutdialog.h"
 
 const int LIST_REFRESH_RATE =20; // Hz
 

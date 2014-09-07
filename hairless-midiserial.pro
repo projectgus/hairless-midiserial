@@ -16,24 +16,26 @@ DEFINES += VERSION=\\\"0.4\\\"
 # Main Program
 
 SOURCES += \
-        main.cpp\
-        mainwindow.cpp \
-        src/Bridge.cpp \
-    src/settingsdialog.cpp \
-    src/aboutdialog.cpp \
-    src/BlinkenLight.cpp
+    src/main.cpp \
+    src/Bridge.cpp \
+    src/BlinkenLight.cpp \
+    src/ui/mainwindow.cpp \
+    src/ui/aboutdialog.cpp \
+    src/ui/settingsdialog.cpp
 
 HEADERS  += \
-    mainwindow.h \
     src/Bridge.h \
     src/Settings.h \
-    src/settingsdialog.h \
-    src/aboutdialog.h \
-    src/BlinkenLight.h
+    src/BlinkenLight.h \
+    src/ui/mainwindow.h \
+    src/ui/settingsdialog.h \
+    src/ui/aboutdialog.h
 
-FORMS += mainwindow.ui \
-    src/settingsdialog.ui \
-    src/aboutdialog.ui
+FORMS += src/ui/mainwindow.ui \
+    src/ui/settingsdialog.ui \
+    src/ui/aboutdialog.ui
+
+INCLUDEPATH += src/
 
 # Universal binary for OS X
 
