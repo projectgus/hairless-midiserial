@@ -56,24 +56,25 @@ void midi_pitch_bend(byte channel, int value)
 
 void midi_command(byte command, byte channel, byte param1, byte param2)
 {
-	Serial.print(command | (channel & 0x0F), BYTE);
-	Serial.print(param1 & 0x7F, BYTE);
-	Serial.print(param2 & 0x7F, BYTE);
+	Serial.write(command | (channel & 0x0F));
+	Serial.write(param1 & 0x7F);
+	Serial.write(param2 & 0x7F);
 }
 
 void midi_command_short(byte command, byte channel, byte param1)
 {
-	Serial.print(command | (channel & 0x0F), BYTE);
-	Serial.print(param1 & 0x7F, BYTE);
+	Serial.write(command | (channel & 0x0F));
+	Serial.write(param1 & 0x7F);
 }
 
 void midi_print(char* msg, int len)
 {
-	Serial.print(0xFF, BYTE);
-	Serial.print(0x00, BYTE);
-	Serial.print(0x00, BYTE);
-	Serial.print(len , BYTE);
-	Serial.print(msg);
+
+	Serial.write(0xFF);
+	Serial.write((byte)0x00);
+	Serial.write((byte)0x00);
+	Serial.write(len);
+	Serial.write(msg);
 }
 
 void midi_comment(char* msg)
