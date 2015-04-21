@@ -69,10 +69,9 @@ void midi_command_short(byte command, byte channel, byte param1)
 
 void midi_print(char* msg, int len)
 {
-
 	Serial.write(0xFF);
-	Serial.write((byte)0x00);
-	Serial.write((byte)0x00);
+	Serial.write(0x00);
+	Serial.write(0x00);
 	Serial.write(len);
 	Serial.write(msg);
 }
