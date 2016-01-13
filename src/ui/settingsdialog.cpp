@@ -36,6 +36,7 @@ static void populateBaudRate(QComboBox *box, BaudRateType initialValue)
     box->addItem("14400", BAUD14400);
 #endif
     box->addItem("19200", BAUD19200);
+    box->addItem("31250 (Native MIDI)", BAUD31250);
     box->addItem("38400", BAUD38400);
 #ifdef Q_OS_WIN32
     box->addItem("56000", BAUD56000);
