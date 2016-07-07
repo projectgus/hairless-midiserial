@@ -3,4 +3,4 @@
 	url = https://github.com/thestk/rtmidi.git
 [submodule "libraries/qextserialport"]
 	path = libraries/qextserialport
-	url = https://code.google.com/p/qextserialport/
+	url = https://github.com/qextserialport/qextserialport.git
