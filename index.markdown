@@ -170,8 +170,9 @@ unchecking the "Serial<->MIDI Bridge" checkbox in the interface.
 * Check the serial port settings (like baud rate) are correct (select
   Preferences from the menu.)
 
-* Try enabling or disabling Hardware Flow Control (you may need to restart
-  the bridge after changing this setting).
+* In the serial port settinhgs dialog, try enabling or disabling
+  Hardware Flow Control (you may need to restart the bridge after
+  changing this setting).
 
 * Try using a Serial Terminal program like minicom or Hyperterminal
   and see if any data is received from there.
