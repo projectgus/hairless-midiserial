@@ -20,11 +20,10 @@ On Windows I recommend building with the [MingGW compiler](http://www.mingw.org/
 
 # Libraries
 
-* [qextserialport](https://code.google.com/p/qextserialport/) is distributed as part of the source tree.
+These small external libraries are distributed as git submodules inside the source tree and are compiled in instead of being linked as libraries. The `git submodule init` command is required to pull down the libraries into a new clone of the source.
 
-* [The RtMidi library](https://github.com/thestk/rtmidi) is hosted on github and is linked into the source tree as a git submodule. The `git submodule init` command is required to pull down RtMidi into a clean clone of the source.
-
-Both libraries are small so they compiled as source files directly into Hairless Bridge, not linked as libraries.
+* [qextserialport](https://code.google.com/p/qextserialport/)
+* [The RtMidi library](https://github.com/thestk/rtmidi)
 
 # Release builds
 
