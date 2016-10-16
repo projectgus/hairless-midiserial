@@ -1,0 +1,12 @@
+--- qt-everywhere-src-5.12.0-original/qtbase/src/plugins/platforms/windows/qwin10helpers.cpp	2018-12-26 22:39:32.423232495 +1100
++++ qt-everywhere-src-5.12.0/qtbase/src/plugins/platforms/windows/qwin10helpers.cpp	2018-12-26 22:39:58.579900331 +1100
+@@ -44,7 +44,8 @@
+ #include <QtCore/private/qsystemlibrary_p.h>
+ 
+ #if defined(Q_CC_MINGW) || defined(Q_CC_CLANG)
+-#  define HAS_UI_VIEW_SETTINGS_INTEROP
++// Not part of MinGW headers in ubuntu xenial, only in bionic & newer
++//#  define HAS_UI_VIEW_SETTINGS_INTEROP
+ // Present from MSVC2015 + SDK 10 onwards
+ #elif (!defined(Q_CC_MSVC) || _MSC_VER >= 1900) && NTDDI_VERSION >= 0xa000000
+ #  define HAS_UI_VIEW_SETTINGS_INTEROP

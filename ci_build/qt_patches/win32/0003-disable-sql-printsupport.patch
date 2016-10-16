@@ -1,0 +1,22 @@
+--- orig/qtbase/src/plugins/plugins.pro.orig	2018-12-27 07:54:02.243549715 +1100
++++ updated/qtbase/src/plugins/plugins.pro	2018-12-27 08:05:31.310961655 +1100
+@@ -1,7 +1,7 @@
+ TEMPLATE = subdirs
+ QT_FOR_CONFIG += network
+ 
+-qtHaveModule(sql): SUBDIRS += sqldrivers
++#qtHaveModule(sql): SUBDIRS += sqldrivers
+ qtHaveModule(network):qtConfig(bearermanagement): SUBDIRS += bearer
+ qtHaveModule(gui) {
+     SUBDIRS *= platforms platforminputcontexts platformthemes
+@@ -10,5 +10,8 @@
+ }
+ qtHaveModule(widgets): SUBDIRS += styles
+ 
+-!winrt:qtHaveModule(printsupport): \
+-    SUBDIRS += printsupport
++# NB: Disabling as we don't need it, but also because cross-building for win32
++# fails with this error https://forum.qt.io/topic/84035/build-error-compiling-printsupport-plugin-with-qt5-8-and-5-9-and-nmake/
++#
++#!winrt:qtHaveModule(printsupport): \
++#    SUBDIRS += printsupport

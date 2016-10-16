@@ -1,0 +1,166 @@
+language: c
+git:
+  # need this so we can use git describe later on
+  depth: false
+env:
+  global:
+    - QTVER=5.14.2
+    - QTDIR=${TRAVIS_BUILD_DIR}/qt-${QTVER}
+    - QTPKG=qt-everywhere-src-${QTVER}
+    - QTURL="http://qt.mirror.constant.com/official_releases/qt/5.14/${QTVER}/single/${QTPKG}.tar.xz"
+cache:
+  timeout: 1000
+  directories:
+    # note: caching version-specific QTDIR avoids any cache problems when the version is bumped
+    - ${QTDIR}
+addons: &addons_common
+  artifacts:
+    paths:
+      - $(ls $TRAVIS_BUILD_DIR/hairless-midiserial*.zip)
+      - $(ls $TRAVIS_BUILD_DIR/hairless-midiserial*.tgz)
+    target_paths:
+      - /travis_builds
+  homebrew:
+    packages:
+      - mingw-w64
+    update: true
+
+jobs:
+  include:
+    - os: linux
+      dist: xenial
+      env: TARGET=linux64
+      addons:
+        <<: *addons_common
+        apt:
+          packages:
+            - fontconfig
+            - gettext
+            - libasound2-dev
+            - libbz2-dev
+            - libexpat1-dev
+            - libfontconfig1-dev
+            - libfreetype6-dev
+            - libglib2.0-dev
+            - libgraphite2-dev
+            - libgtk-3-dev
+            - libharfbuzz-dev
+            - libice-dev
+            - libicu-dev
+            - libjpeg-dev
+            - libpcre3-dev
+            - libpng-dev
+            - libsm-dev
+            - libudev-dev
+            - libx11-dev
+            - libx11-xcb-dev
+            - libxau-dev
+            - libxcb-glx0-dev
+            - libxcb-icccm4-dev
+            - libxcb-image0-dev
+            - libxcb-keysyms1-dev
+            - libxcb-randr0-dev
+            - libxcb-render-util0-dev
+            - libxcb-shape0-dev
+            - libxcb-shm0-dev
+            - libxcb-sync-dev
+            - libxcb-xfixes0-dev
+            - libxcb-xinerama0-dev
+            - libxcb1-dev
+            - libxcursor-dev
+            - libxdmcp-dev
+            - libxext-dev
+            - libxfixes-dev
+            - libxi-dev
+            - libxinerama-dev
+            - libxkbcommon-dev
+            - libxkbcommon-x11-dev
+            - libxrandr-dev
+            - libxrender-dev
+            - libxss-dev
+            - libxt-dev
+            - libxv-dev
+            - libxxf86vm-dev
+            - uuid-dev
+            - zlib1g-dev
+    - os: linux
+      dist: xenial
+      env: TARGET=linux32 PKG_CONFIG_PATH=/usr/lib/i386-linux-gnu/pkgconfig
+      addons:
+        <<: *addons_common
+        apt:
+          packages:
+            - fontconfig
+            - g++-multilib
+            - gcc-multilib
+            - gettext
+            - libasound2-dev:i386
+            - libbz2-dev:i386
+            - libcairo2-dev:i386
+            - libexpat1-dev:i386
+            - libfontconfig1-dev:i386
+            - libfreetype6-dev:i386
+            - libgdk-pixbuf2.0-dev:i386
+            - libglib2.0-dev:i386
+            - libgraphite2-dev:i386
+            - libgtk-3-dev:i386
+            - libharfbuzz-dev:i386
+            - libice-dev:i386
+            - libicu-dev:i386
+            - libjpeg-dev:i386
+            - libpango1.0-dev:i386
+            - libpcre3-dev:i386
+            - libpng-dev:i386
+            - libsm-dev:i386
+            - libudev-dev:i386
+            - libx11-dev:i386
+            - libx11-xcb-dev:i386
+            - libxau-dev:i386
+            - libxcb-glx0-dev:i386
+            - libxcb-icccm4-dev:i386
+            - libxcb-image0-dev:i386
+            - libxcb-keysyms1-dev:i386
+            - libxcb-randr0-dev:i386
+            - libxcb-render-util0-dev:i386
+            - libxcb-shape0-dev:i386
+            - libxcb-shm0-dev:i386
+            - libxcb-sync-dev:i386
+            - libxcb-xfixes0-dev:i386
+            - libxcb-xinerama0-dev:i386
+            - libxcb1-dev:i386
+            - libxcursor-dev:i386
+            - libxdmcp-dev:i386
+            - libxext-dev:i386
+            - libxext-dev:i386
+            - libxfixes-dev:i386
+            - libxft-dev:i386
+            - libxi-dev:i386
+            - libxinerama-dev:i386
+            - libxkbcommon-x11-dev:i386
+            - libxkbcommon-dev:i386
+            - libxrandr-dev:i386
+            - libxrender-dev:i386
+            - libxss-dev:i386
+            - libxt-dev:i386
+            - libxv-dev:i386
+            - libxxf86vm-dev:i386
+            - uuid-dev:i386
+            - zlib1g-dev:i386
+    # note: cross-build for win32 on osx as xenial's mingw-w64 compiler is too old to build working Qt apps,
+    # see https://forum.qt.io/topic/87793/qt-5-10-mingw64-static-building-failed
+    - os: osx
+      env: TARGET=win32
+      osx_image: xcode11.3
+      addons: *addons_common
+    - os: osx
+      env: TARGET=macos
+      osx_image: xcode11.3
+      addons: *addons_common
+
+before_install:
+  - test -x ${QTDIR}/bin/qmake || ci_build/build_qt_static.sh
+script:
+  - cd ${TRAVIS_BUILD_DIR}
+  - ${QTDIR}/bin/qmake
+  - make
+  - ./ci_build/package_hairless.sh
