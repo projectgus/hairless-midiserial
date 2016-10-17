@@ -132,5 +132,4 @@ macx {
 # Resources
 
 RESOURCES += \
-    resources/resources.qrc
-
+    resources.qrc
