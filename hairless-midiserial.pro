@@ -78,7 +78,7 @@ macx {
 }
 
 win32 {
-  SOURCES          += libraries/qextserialport/src/win_qextserialport.cpp \
+  SOURCES          += libraries/qextserialport/src/qextserialport_win.cpp \
                       libraries/qextserialport/src/qextserialenumerator_win.cpp
   DEFINES          += WINVER=0x0501 # needed for mingw to pull in appropriate dbt business...probably a better way to do this
   LIBS             += -lsetupapi
