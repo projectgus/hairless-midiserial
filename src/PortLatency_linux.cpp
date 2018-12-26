@@ -43,7 +43,7 @@ bool PortLatency::swapAsync(bool setAsyncMode)
     if(!portName.startsWith("/dev/")) {
         portName.prepend("/dev/");
     }
-    int fd = open(portName.toAscii().data(), O_NONBLOCK);
+    int fd = open(qPrintable(portName), O_NONBLOCK);
     if(fd <= 0) {
         emit errorMessage(QString("Failed to open serial port device %1 to lower latency").arg(portName));
         return false;
