@@ -139,16 +139,16 @@ void MainWindow::refreshMidi(QComboBox *combo, RtMidi *midi)
 {
     QString current = combo->currentText();
     combo->clear();
+    combo->addItem(TEXT_NOT_CONNECTED);
     try
     {
       int ports = midi->getPortCount();
-      combo->addItem(TEXT_NOT_CONNECTED);
       for (int i = 0; i < ports; i++ ) {
-        QString name = QString::fromStdString(midi->getPortName(i));
-        combo->addItem(name);
+            QString name = QString::fromStdString(midi->getPortName(i));
+            combo->addItem(name);
             if(current == name) {
                 combo->setCurrentIndex(combo->count() - 1);
-           }
+            }
         }
     }
     catch (RtMidiError err) {
@@ -195,9 +195,12 @@ void MainWindow::onValueChanged()
     Settings::setLastMidiOut(ui->cmbMidiOut->currentText());
     Settings::setLastSerialPort(ui->cmbSerial->currentText());
     if(!ui->chk_on->isChecked()
-            || ( ui->cmbSerial->currentIndex() == 0
-                    && ui->cmbMidiIn->currentIndex() == 0
-                    && ui->cmbMidiOut->currentIndex() == 0 )) {
+            || ui->cmbSerial->currentIndex() == -1 /* during an update, comboboxes may be cleared */
+            || ui->cmbMidiIn->currentIndex() == -1
+            || ui->cmbMidiOut->currentIndex() == -1
+            || ( ui->cmbSerial->currentIndex() == 0 /* picked the "not connected" value for everything */
+                 && ui->cmbMidiIn->currentIndex() == 0
+                 && ui->cmbMidiOut->currentIndex() == 0 )) {
         return;
     }
     ui->lst_debug->clear();
