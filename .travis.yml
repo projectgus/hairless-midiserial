@@ -8,11 +8,13 @@ env:
     - QTDIR=${TRAVIS_BUILD_DIR}/qt-${QTVER}
     - QTPKG=qt-everywhere-src-${QTVER}
     - QTURL="http://qt.mirror.constant.com/official_releases/qt/5.14/${QTVER}/single/${QTPKG}.tar.xz"
+    - LINUXDEPLOY_DIR="$TRAVIS_BUILD_DIR/linuxdeploy"
 cache:
   timeout: 1000
   directories:
     # note: caching version-specific QTDIR avoids any cache problems when the version is bumped
     - ${QTDIR}
+    - ${LINUXDEPLOY_DIR}
 addons: &addons_common
   artifacts:
     paths:
@@ -29,7 +31,10 @@ jobs:
   include:
     - os: linux
       dist: xenial
-      env: TARGET=linux64
+      env:
+        - TARGET=linux64
+        - LINUXDEPLOY_URL=https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+        - LINUXDEPLOY_BIN=linuxdeploy-x86_64.AppImage
       addons:
         <<: *addons_common
         apt:
@@ -85,7 +90,11 @@ jobs:
             - zlib1g-dev
     - os: linux
       dist: xenial
-      env: TARGET=linux32 PKG_CONFIG_PATH=/usr/lib/i386-linux-gnu/pkgconfig
+      env:
+        - TARGET=linux32
+        - PKG_CONFIG_PATH=/usr/lib/i386-linux-gnu/pkgconfig
+        - LINUXDEPLOY_URL=https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-i386.AppImage
+        - LINUXDEPLOY_BIN=linuxdeploy-i386.AppImage
       addons:
         <<: *addons_common
         apt:
@@ -100,6 +109,7 @@ jobs:
             - libexpat1-dev:i386
             - libfontconfig1-dev:i386
             - libfreetype6-dev:i386
+            - libfuse2:i386
             - libgdk-pixbuf2.0-dev:i386
             - libglib2.0-dev:i386
             - libgraphite2-dev:i386

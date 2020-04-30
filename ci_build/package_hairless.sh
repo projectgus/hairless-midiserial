@@ -6,21 +6,55 @@ cd $TRAVIS_BUILD_DIR
 case $TARGET in
     linux64)
         BINARY=hairless-midiserial
+        APPIMAGE=hairless-midiserial-x86_64.AppImage
         ;;
     linux32)
         BINARY=hairless-midiserial
+        APPIMAGE=hairless-midiserial-i386.AppImage
         ;;
     win32)
         BINARY=release/hairless-midiserial.exe
+        APPIMAGE=
         ;;
     macos)
         BINARY=hairless-midiserial.app
+        APPIMAGE=
         ;;
     *)
         echo "Target not found: $TARGET"
         exit 1
         ;;
 esac
+
+if [ -n "$APPIMAGE" ]; then
+    # Build an AppImage!
+
+    # This is necessary because the "static linked" hairless binary currently
+    # still links against a bunch of X11 related shared libraries, can't find
+    # a way to build Qt with these as static libraries.
+
+    if [ ! -f "$LINUXDEPLOY_DIR/$LINUXDEPLOY_BIN" ]; then
+        mkdir -p $LINUXDEPLOY_DIR
+        cd $LINUXDEPLOY_DIR
+		wget "$LINUXDEPLOY_URL"
+		chmod +x "$LINUXDEPLOY_BIN"
+        cd -
+	fi
+
+    # TODO: do we need qt plugin?
+    # TODO: copyright file(s)
+
+    mkdir AppDir
+    # linuxdeploy will assemble the parts we provide into the AppDir structure and then build the AppImage
+
+    "$LINUXDEPLOY_DIR/$LINUXDEPLOY_BIN" \
+                                        -e $BINARY \
+                                        -d ci_build/hairless-midiserial.desktop \
+                                        -i resources/images/hairless-midiserial-icon.png \
+                                        --appdir AppDir \
+                                        --output appimage
+    BINARY="*.AppImage"
+fi
 
 VERSION=$(git describe --tags --always || get rev-parse HEAD)
 

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Hairless Midi-Serial Bridge
+Comment=Bridge a plain serial connection with MIDI data into a MIDI connection
+Exec=hairless-midiserial
+Icon=hairless-midiserial-icon
+Type=Application
+Terminal=false
+Categories=Audio;
+Keywords=MIDI;Music;
