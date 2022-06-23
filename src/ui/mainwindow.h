@@ -1,11 +1,11 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-#include <QComboBox>
-#include <QLabel>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QLabel>
 #include <QTime>
-#include <QMenuBar>
+#include <QtWidgets/QMenuBar>
 #include <QTimer>
 #include "RtMidi.h"
 #include "Bridge.h"

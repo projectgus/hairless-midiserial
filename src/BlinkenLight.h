@@ -2,7 +2,7 @@
 #define BLINKENLIGHT_H
 
 #include <QObject>
-#include <QLabel>
+#include <QtWidgets/QLabel>
 #include <QTimer>
 
 /*
