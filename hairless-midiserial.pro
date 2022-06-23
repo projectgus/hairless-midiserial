@@ -40,7 +40,7 @@ INCLUDEPATH += src/
 # Universal binary for OS X
 
 macx {
-    CONFIG += ppc x86
+    CONFIG += ppc x86 x86_64 arm64
 }
 
 
