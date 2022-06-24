@@ -216,7 +216,7 @@ void Bridge::sendMidiMessage() {
   if(msg_data.length() == 0)
     return;
   if(bufferStartsWith(MSG_DEBUG)) {
-      QString debug_msg = QString::fromAscii(msg_data.mid(4, msg_data[3]).data());
+      QString debug_msg = QString::fromLatin1(msg_data.mid(4, msg_data[3]).data());
       emit displayMessage(applyTimeStamp(QString("Serial Says: %1").arg(debug_msg)));
   } else {
       emit debugMessage(applyTimeStamp(QString("Serial In: %1").arg(describeMIDI(msg_data))));

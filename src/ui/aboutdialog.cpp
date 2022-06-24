@@ -7,7 +7,7 @@ AboutDialog::AboutDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QString text = ui->label_info->text().arg(QString::fromAscii(VERSION)).arg(QString::fromAscii(__DATE__));
+    QString text = ui->label_info->text().arg(QString::fromLatin1(VERSION)).arg(QString::fromLatin1(__DATE__));
     ui->label_info->setText(text);
 }
 

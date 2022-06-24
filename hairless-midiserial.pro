@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += widgets
 
 TARGET = hairless-midiserial
 TEMPLATE = app
@@ -40,7 +40,8 @@ INCLUDEPATH += src/
 # Universal binary for OS X
 
 macx {
-    CONFIG += ppc x86
+#    QMAKE_APPLE_DEVICE_ARCHS = x86_64 arm64
+    CONFIG += x86_64 arm64
 }
 
 
