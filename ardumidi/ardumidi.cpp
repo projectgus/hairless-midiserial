@@ -99,9 +99,9 @@ int midi_message_available() {
            in the buffer. At least we get first one right! */
 	byte command = Serial.peek() & 11110000;
 	if (command != MIDI_PROGRAM_CHANGE && command != MIDI_CHANNEL_PRESSURE) {
-		return (Serial.available()/2);
+		return (Serial.available()/3);
 	}
-	return (Serial.available()/3);
+	return (Serial.available()/2);
 }
 
 MidiMessage read_midi_message() {
